@@ -63,7 +63,7 @@ const TEST = DATA.interest;
 const scale = TEST.scale.labels;
 const maxScale = Math.max(...scale.map(s => s.value));
 const state = { stage:'welcome', track:null, caseId:null, step:0, chosen:{}, revealed:new Set(),
-                q:0, answers:{}, testAnswers:{}, results:{} };
+                q:0, answers:{}, testAnswers:{}, results:{}, stop:0 };
 
 const bgFor = f => f ? `url('img/${f}')` : 'none';
 const setBg = f => { document.getElementById('bg').style.backgroundImage = bgFor(f); };
@@ -107,7 +107,10 @@ function welcome(){
     <h1>لن تقرأ عن المهنة.<br><span class="acc">ستعيشها.</span></h1>
     <p class="lead">تختبِر ما يستهويك، ثم تعيش يوماً كاملاً في التخصص، ثم تعرف هل يشبهك.</p>
   </main>
-  <button class="band" onclick="go('intro')">ابدأ اليوم الأول <small>لا يجمع التطبيق أي بيانات</small></button>`;
+  <button class="band" onclick="go('intro')">ابدأ اليوم الأول <small>لا يجمع التطبيق أي بيانات</small></button>
+  <div style="text-align:center;padding:10px 0 16px">
+    <a href="#" onclick="go('tour');return false" style="color:var(--blue-deep);font-size:12px">جولة داخل قسم الطوارئ ‹</a>
+  </div>`;
 }
 
 function intro(){
@@ -266,6 +269,28 @@ function dashboard(){
   <button class="band" onclick="again()">أعد المحاولة</button>`;
 }
 
+function tour(){
+  const stops = DATA.tour;
+  const stop = stops[state.stop];
+  setBg(stop.img);
+  const route = stops.map((x,i) => `<button class="plain" style="flex:1;min-width:64px;padding:6px;border:1px solid var(--rule);
+      background:${i===state.stop?'var(--red)':'rgba(255,255,255,.5)'};color:${i===state.stop?'#fff':'inherit'};
+      font-size:10px" onclick="window.jumpStop(${i})">${i+1}. ${esc(x.title)}</button>`).join('');
+  return `<main>
+    <h1>جولة داخل الطوارئ</h1>
+    <div class="meta">${state.stop+1} من ${stops.length} — ${esc(stop.title)}</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0">${route}</div>
+    <img class="plate" style="height:220px" src="img/${stop.img}" alt="">
+    <div class="chip"><b>ماذا يحدث هنا</b><div class="small" style="margin-top:6px">${esc(stop.what)}</div></div>
+    <div class="chip"><b>ما يلاحظه الطبيب</b><div class="small" style="margin-top:6px">${esc(stop.notice)}</div></div>
+    <div class="footer">هذه جولة مصوّرة داخل القسم — صور حقيقية بدرجة لون واحدة.</div>
+  </main>
+  <button class="band" onclick="window.nextStop()">${state.stop < stops.length-1 ? 'المحطة التالية' : 'ابدأ يوماً في الطوارئ'}
+    <small>${state.stop < stops.length-1 ? '' : 'حالة: ثلاث إصابات'}</small></button>`;
+}
+
+const TOUR_STAGE = 'tour';
+
 function profile(){
   setBg('screen-dashboard.jpg');
   const rows = live();
@@ -327,11 +352,22 @@ function record(){
 }
 function again(){ state.step=0; state.chosen={}; state.revealed=new Set(); state.q=0; state.answers={}; go('scenario'); }
 
-const SCREENS = {welcome, intro, test, fit, tracks, cases, scenario, assessment, dashboard, profile};
+const SCREENS = {welcome, intro, test, fit, tracks, cases, scenario, assessment, dashboard, profile, tour};
 function render(){ document.getElementById('screen').innerHTML = SCREENS[state.stage](); }
 // A module's functions are not global, and the markup uses inline handlers: expose the actions.
+function jumpStop(i){ state.stop = i; render(); window.scrollTo(0,0); }
+function nextStop(){
+  const n = DATA.tour.length;
+  if (state.stop < n - 1){ state.stop++; render(); window.scrollTo(0,0); }
+  else {
+    state.track = 'emergency-medicine';
+    state.caseId = (CASES.find(c => c.specialty.id === 'emergency-medicine') || CASES[0]).id;
+    state.step = 0; state.chosen = {}; state.revealed = new Set(); state.q = 0; state.answers = {};
+    go('scenario');
+  }
+}
 Object.assign(window, {go, pickTrack, pickCase, startCase, answerTest, choose, nextStep,
-                       answerAssessment, nextQuestion, again});
+                       answerAssessment, nextQuestion, again, jumpStop, nextStop});
 render();
 </script>
 </body>
