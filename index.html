@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>آفاق المستقبل — معاينة</title>
+<style>
+:root{
+  --blue-deep:#0A1F33; --blue:#0E2A47; --paper:#F4EBDB; --wash:rgba(207,230,248,.86);
+  --red:#A02B22; --redlite:#E8837A; --chip:rgba(220,234,255,.94); --rule:rgba(10,31,51,.22);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{
+  font-family:'Alexandria','Noto Naskh Arabic',-apple-system,'Segoe UI',Tahoma,sans-serif;
+  background:var(--blue); color:var(--blue-deep);
+}
+.phone{max-width:430px;margin:0 auto;min-height:100%;position:relative;background:#dfeefb;overflow:hidden}
+.bg{position:fixed;inset:0;max-width:430px;margin:0 auto;background-size:cover;background-position:center}
+.wash{position:fixed;inset:0;max-width:430px;margin:0 auto;background:var(--wash)}
+.screen{position:relative;min-height:100vh;display:flex;flex-direction:column;padding:18px 22px 0}
+main{flex:1;overflow-y:auto;padding-bottom:14px}
+h1{font-size:29px;margin:.2em 0;font-weight:700}
+.lead{font-size:15px;line-height:1.7;color:rgba(10,31,51,.88)}
+.meta{font-size:11px;color:rgba(10,31,51,.66);letter-spacing:0}
+.rule{height:1px;background:var(--rule);margin:12px 0}
+.band{
+  display:block;width:100%;border:0;background:var(--red);color:#fff;text-align:start;
+  padding:16px 18px;font-size:19px;font-weight:700;margin-top:auto;cursor:pointer;
+}
+.band small{display:block;font-size:11px;font-weight:400;opacity:.8;margin-top:3px}
+.band[disabled]{background:#a9b9c9;cursor:not-allowed}
+.chip{background:var(--chip);border:1px solid var(--rule);padding:12px 14px;margin:10px 0}
+.chip.sel{border:2px solid var(--red)}
+button.plain{background:none;border:0;font:inherit;color:inherit;text-align:start;cursor:pointer;width:100%}
+.row{display:flex;gap:10px;align-items:baseline;margin:10px 0}
+.num{font-size:11px;color:rgba(10,31,51,.6)}
+.acc{color:var(--red);font-weight:700}
+.opt{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-top:1px solid var(--rule)}
+.letter{width:28px;height:28px;border:1.4px solid var(--blue-deep);display:grid;place-items:center;flex:0 0 auto}
+.optscale{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
+.optscale button{flex:1 1 30%;padding:8px 4px;border:1px solid var(--rule);background:rgba(255,255,255,.5);font:inherit;font-size:11px;cursor:pointer}
+.optscale button.on{background:var(--red);color:#fff;border-color:var(--red)}
+.card{background:var(--chip);border:1px solid var(--rule);margin:12px 0}
+.card img{width:100%;height:150px;object-fit:cover;display:block}
+.card .body{padding:12px 14px}
+.strip{font-size:11px;color:var(--red);padding:9px 14px;border-top:1px solid var(--rule);display:flex;justify-content:space-between}
+.small{font-size:12px;color:rgba(10,31,51,.72)}
+img.plate{width:100%;height:170px;object-fit:cover;display:block;margin:10px 0}
+.footer{padding:14px 0 26px;font-size:11px;color:rgba(10,31,51,.6);text-align:center}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="bg" id="bg"></div>
+  <div class="wash"></div>
+  <div class="screen" id="screen"></div>
+</div>
+<script type="module">
+const DATA = await (await fetch('data.json')).json();
+const CASES = DATA.cases;
+const TEST = DATA.interest;
+const scale = TEST.scale.labels;
+const maxScale = Math.max(...scale.map(s => s.value));
+const state = { stage:'welcome', track:null, caseId:null, step:0, chosen:{}, revealed:new Set(),
+                q:0, answers:{}, testAnswers:{}, results:{} };
+
+const bgFor = f => f ? `url('img/${f}')` : 'none';
+const setBg = f => { document.getElementById('bg').style.backgroundImage = bgFor(f); };
+const esc = s => (s||'').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+function specialties(){
+  const map = new Map();
+  for (const c of CASES){
+    const id = c.specialty.id;
+    if (!map.has(id)) map.set(id, {id, name:c.specialty.name, cases:[]});
+    map.get(id).cases.push(c);
+  }
+  return [...map.values()];
+}
+const live = () => specialties().map(s => {
+  const rows = Object.values(state.results).filter(r => r.specialtyID === s.id);
+  const interest = interestLean(s.id);
+  const score = rows.reduce((a,r)=>a+r.score,0), total = rows.reduce((a,r)=>a+r.total,0);
+  const dr = rows.reduce((a,r)=>a+r.decisionsRight,0), dt = rows.reduce((a,r)=>a+r.decisionsTotal,0);
+  const dok = rows.reduce((a,r)=>Math.max(a,r.dok),0);
+  const fit = rows.length && total ? interest*0.5 + (score/total)*0.5 : interest*0.5;
+  return {...s, cases: rows.length, score, total, dr, dt, dok, fit, percent: Math.round(fit*100)};
+}).sort((a,b)=>b.fit-a.fit);
+
+function interestLean(sid){
+  const items = TEST.items.filter(i => i.dimension === sid);
+  if (!items.length) return 0;
+  const sum = items.reduce((a,i)=>a + (state.testAnswers[i.id]||0), 0);
+  return sum / (items.length * maxScale);
+}
+const currentCase = () => CASES.find(c => c.id === state.caseId) || CASES[0];
+const T = k => (window.__l10n = window.__l10n || {})[k] || k;
+
+/* ---------------------------------------------------------------- screens */
+function welcome(){
+  setBg('screen-welcome.jpg');
+  return `<main>
+    <div class="meta">آفاق المستقبل</div>
+    <div class="small" style="margin-top:4px">يوم في حياة طبيب القلب · يوم في حياة طبيب الأطفال · وبقية المسارات</div>
+    <div style="height:34vh"></div>
+    <h1>لن تقرأ عن المهنة.<br><span class="acc">ستعيشها.</span></h1>
+    <p class="lead">تختبِر ما يستهويك، ثم تعيش يوماً كاملاً في التخصص، ثم تعرف هل يشبهك.</p>
+  </main>
+  <button class="band" onclick="go('intro')">ابدأ اليوم الأول <small>لا يجمع التطبيق أي بيانات</small></button>`;
+}
+
+function intro(){
+  setBg('screen-intro.jpg');
+  return `<main>
+    <h1>قبل أن تختار تخصصك…</h1>
+    <p class="lead">هذه معاينة للمحتوى الحقيقي: ${CASES.length} حالة في ${specialties().length} تخصص. كل حالة أربع خطوات وأربعة أسئلة متدرّجة، ولكل خطوة مصدرها.</p>
+    <div class="rule"></div>
+    <p class="small">ملاحظة: هذه نسخة ويب للمعاينة السريعة، والتطبيق الأصلي على iOS وAndroid.</p>
+  </main>
+  <button class="band" onclick="go('test')">لنبدأ</button>`;
+}
+
+function test(){
+  setBg('screen-test.jpg');
+  const answered = Object.keys(state.testAnswers).length;
+  const rows = TEST.items.map((it, idx) => {
+    const chips = scale.map(s => `<button class="${state.testAnswers[it.id]===s.value?'on':''}"
+        onclick="answerTest('${it.id}',${s.value})">${esc(s.text.ar)}</button>`).join('');
+    return `<div class="rule"></div>
+      <div style="margin:10px 0 2px">${esc((idx+1)+'. '+it.text.ar)}</div>
+      <div class="optscale">${chips}</div>`;
+  }).join('');
+  return `<main>${rows}<div class="footer">${answered} / ${TEST.items.length}</div></main>
+  <button class="band" ${answered < TEST.items.length ? 'disabled' : ''}
+    onclick="go('fit')">أظهر النتيجة <small>${answered < TEST.items.length ? 'أكمل الأسئلة أولاً' : 'جاهز'}</small></button>`;
+}
+
+function fit(){
+  setBg('screen-fit.jpg');
+  const lean = live().filter(s => s.fit > 0.45).slice(0,3);
+  const named = lean.length ? lean.map(s => s.name.ar).join(' · ') : 'قلب';
+  return `<main>
+    <h1>ما تشير إليه إجاباتك</h1>
+    <div class="acc" style="font-size:26px;font-weight:700">${esc(named)}</div>
+    <div class="rule"></div>
+    <p class="lead">اختر يوماً لتعيشه من المسارات المتاحة، وسيُقاس أداؤك على الحالة نفسها.</p>
+  </main>
+  <button class="band" onclick="go('tracks')">اختر مسارك</button>`;
+}
+
+function tracks(){
+  setBg('screen-fit.jpg');
+  const cards = specialties().map(s => `
+    <div class="card ${state.track===s.id?'sel':''}" onclick="pickTrack('${s.id}')">
+      ${s.cases[0].background ? `<img src="img/${s.cases[0].background.file}" alt="">` : ''}
+      <div class="body">
+        <div style="font-weight:700">${esc(s.name.ar)}</div>
+        <div class="small">${s.cases.length} حالات متاحة</div>
+      </div>
+      <div class="strip"><span>اختر هذا المسار</span><span>‹</span></div>
+    </div>`).join('');
+  return `<main><h1>اختر مسارك</h1>${cards}</main>
+  <button class="band" onclick="go('cases')">اختر التخصص</button>`;
+}
+
+function cases(){
+  setBg('screen-fit.jpg');
+  const list = specialties().filter(s => !state.track || s.id === state.track);
+  const cards = list.map(s => `
+    <div class="acc" style="margin-top:14px">${esc(s.name.ar)}</div>` + s.cases.map(c => `
+    <div class="card ${state.caseId===c.id?'sel':''}" onclick="pickCase('${c.id}')">
+      ${c.cover ? `<img src="img/${c.cover.file}" alt="">` : ''}
+      <div class="body">
+        <div style="font-weight:700">${esc(c.title.ar)}</div>
+        <div class="small">${esc(c.summary.ar)}</div>
+        <div class="meta">Dok ${c.dok} · ${c.estimatedMinutes||0} دقيقة</div>
+      </div>
+      <div class="strip"><span>ابدأ هذا اليوم</span><span>‹</span></div>
+    </div>`).join('')).join('');
+  return `<main><h1>اختر يوماً لتعيشه</h1>
+    <div class="small">${CASES.length} حالة متاحة</div>${cards}</main>
+  <button class="band" onclick="startCase()">ابدأ هذا اليوم</button>`;
+}
+
+function scenario(){
+  const c = currentCase();
+  const step = c.scenario[state.step];
+  setBg(c.background ? c.background.file : 'background-day.jpg');
+  const revealed = state.revealed.has(step.id);
+  const picked = state.chosen[step.id];
+  let body = `<div class="meta">${esc(c.specialty.name.ar)} · ${state.step+1} من ${c.scenario.length}</div>`;
+  if (step.image) body += `<img class="plate" src="img/${step.image.file}" alt="">`;
+  body += `<p class="lead">${esc(step.text.ar)}</p>`;
+  if (step.kind === 'decision' && step.choices){
+    const letters = ['أ','ب','ج','د','هـ'];
+    body += `<div class="rule"></div><div style="font-weight:700;margin-bottom:6px">ماذا تفعل؟</div>`;
+    body += step.choices.map((ch, i) => {
+      const isPicked = picked === ch.id;
+      const tag = revealed && ch.correct ? 'صحيح' : (revealed && isPicked ? 'غير آمن' : '');
+      return `<div class="opt" onclick="choose('${step.id}','${ch.id}')">
+        <div class="letter">${letters[i]||''}</div>
+        <div style="flex:1">
+          <div>${esc(ch.text.ar)}</div>
+          ${tag ? `<div class="meta acc">${tag} — ${esc((ch.feedback||{}).ar||'')}</div>` : ''}
+        </div></div>`;
+    }).join('');
+  }
+  const nextLabel = state.step < c.scenario.length - 1 ? 'التالي' : 'إلى التقييم';
+  const locked = step.kind === 'decision' && !revealed;
+  return `<main>${body}</main>
+    <button class="band" ${locked?'disabled':''} onclick="nextStep()">${nextLabel}
+      <small>${locked?'اختر إجابة أولاً':''}</small></button>`;
+}
+
+function assessment(){
+  const c = currentCase();
+  const q = c.assessment[state.q];
+  setBg('screen-assessment.jpg');
+  const answered = state.answers[q.id];
+  const letters = ['أ','ب','ج','د'];
+  const body = `<div class="meta">تقييم · ${state.q+1} من ${c.assessment.length} · Dok ${q.dok}</div>
+    <div style="font-weight:700;margin:10px 0">${esc(q.prompt.ar)}</div>` +
+    q.choices.map((ch,i) => {
+      const isPicked = answered === ch.id;
+      const tag = answered && ch.correct ? 'صحيح' : (answered && isPicked ? 'غير صحيح' : '');
+      return `<div class="opt" onclick="answerAssessment('${q.id}','${ch.id}')">
+        <div class="letter">${letters[i]||''}</div>
+        <div style="flex:1"><div>${esc(ch.text.ar)}</div>
+        ${tag ? `<div class="meta">${tag} — ${esc(ch.explanation? '' : '')}</div>` : ''}</div></div>`;
+    }).join('') +
+    (answered ? `<div class="rule"></div><div class="small">${esc(q.explanation.ar)}</div>` : '');
+  const last = state.q >= c.assessment.length - 1;
+  return `<main>${body}</main>
+    <button class="band" ${answered?'':'disabled'} onclick="nextQuestion()">
+      ${last?'أظهر النتيجة':'التالي'}<small>${answered?(last?'ثم النتيجة':'السؤال التالي'):'اختر إجابة أولاً'}</small></button>`;
+}
+
+function dashboard(){
+  const c = currentCase();
+  setBg(c.background ? c.background.file : 'screen-dashboard.jpg');
+  const total = Math.max(c.assessment.length,1);
+  const right = c.assessment.filter(q => {
+    const picked = state.answers[q.id];
+    return (q.choices.find(x=>x.id===picked)||{}).correct === true;
+  }).length;
+  const decisions = c.scenario.filter(s => s.kind === 'decision');
+  const made = decisions.filter(s => state.chosen[s.id]).length;
+  const ok = decisions.filter(s => (s.choices.find(x=>x.id===state.chosen[s.id])||{}).correct).length;
+  const pct = Math.round(right*100/total);
+  return `<main>
+    <div class="meta">نتيجتك</div>
+    <h1>${esc(c.specialty.name.ar)}</h1>
+    <div style="font-size:48px;font-weight:700">${pct}٪</div>
+    <div class="meta">${right} / ${total} إجابات صحيحة</div>
+    <div class="rule"></div>
+    <div class="row"><span class="num">المواقف التي عشتها</span><span style="margin-inline-start:auto">${made} / ${decisions.length}</span></div>
+    <div class="row"><span class="num">القرارات الصحيحة</span><span style="margin-inline-start:auto">${ok} / ${decisions.length}</span></div>
+    <div class="row"><span class="num">الأسئلة</span><span style="margin-inline-start:auto">${right} / ${total}</span></div>
+    <div class="rule"></div>
+    <div class="small">${esc(c.outcome.fitMessage.ar)}</div>
+    <div class="chip" style="margin-top:14px"><b>الخطوات التالية</b>
+      <ul>${c.outcome.nextSteps.map(s=>`<li>${esc(s.ar)}</li>`).join('')}</ul></div>
+    <div class="chip" onclick="go('profile')" style="cursor:pointer">ملفك عبر المسارات ‹</div>
+  </main>
+  <button class="band" onclick="again()">أعد المحاولة</button>`;
+}
+
+function profile(){
+  setBg('screen-dashboard.jpg');
+  const rows = live();
+  const lived = rows.filter(r => r.cases > 0);
+  const body = rows.map((r,i) => `<div class="rule"></div>
+    <div class="row">
+      <span class="num">${i+1}.</span><span style="font-weight:700">${esc(r.name.ar)}</span>
+      <span style="margin-inline-start:auto" class="${r.cases?'acc':''}">
+        ${r.cases ? r.percent+'٪' : 'بيانات غير كافية'}</span>
+    </div>
+    <div class="meta">${r.cases
+      ? `${r.cases} حالة · ${r.score}/${r.total} إجابات صحيحة · ${r.dr}/${r.dt} قرارات صحيحة · Dok ${r.dok}`
+      : 'من إجاباتك فقط — لم تعش يوماً في هذا التخصص بعد'}</div>`).join('');
+  const next = rows.filter(r=>!r.cases).sort((a,b)=>b.fit-a.fit)[0];
+  const conclusion = lived.length >= 3
+    ? `أقرب مسار إليك: <b>${esc(lived[0].name.ar)}</b> — ${lived[0].percent}٪`
+    : 'العيّنة صغيرة. عِش يوماً في تخصصين آخرين حتى تستحق الخلاصة أن تُقرأ.';
+  return `<main>
+    <h1>ملفك عبر المسارات</h1>
+    <div class="meta">كل رقم هنا محسوب من إجاباتك وأيامك التي عشتها، لا من شيء آخر.</div>
+    ${body}
+    <div class="rule"></div>
+    <div class="chip">
+      <b>الخلاصة</b>
+      <div class="small" style="margin-top:6px">${conclusion}</div>
+      ${next?`<div class="acc" style="margin-top:8px">التخصص الذي يستحق تجربتك التالية: ${esc(next.name.ar)}</div>`:''}
+    </div>
+    <div class="footer"><a href="#" onclick="go('dashboard');return false">‹ رجوع</a></div>
+  </main>
+  <button class="band" onclick="go('cases')">اختر يوماً آخر</button>`;
+}
+
+/* ---------------------------------------------------------------- actions */
+function go(stage){ state.stage = stage; render(); window.scrollTo(0,0); }
+function pickTrack(id){ state.track = id; state.caseId = (specialties().find(s=>s.id===id)||{cases:[CASES[0]]}).cases[0].id; render(); }
+function pickCase(id){ state.track = CASES.find(c=>c.id===id).specialty.id; state.caseId = id; render(); }
+function startCase(){ if(!state.caseId) state.caseId = CASES[0].id; state.step = 0; state.chosen = {}; state.revealed = new Set(); state.q = 0; state.answers = {}; go('scenario'); }
+function answerTest(id,v){ state.testAnswers[id] = v; render(); }
+function choose(stepId, choiceId){ state.chosen[stepId] = choiceId; state.revealed.add(stepId); render(); }
+function nextStep(){
+  const c = currentCase();
+  if (state.step < c.scenario.length - 1){ state.step++; render(); window.scrollTo(0,0); }
+  else { state.q = 0; go('assessment'); }
+}
+function answerAssessment(qid, choiceId){ state.answers[qid] = choiceId; render(); }
+function nextQuestion(){
+  const c = currentCase();
+  if (state.q < c.assessment.length - 1){ state.q++; render(); window.scrollTo(0,0); }
+  else { record(); go('dashboard'); }
+}
+function record(){
+  const c = currentCase();
+  const total = Math.max(c.assessment.length,1);
+  const score = c.assessment.filter(q => (q.choices.find(x=>x.id===state.answers[q.id])||{}).correct === true).length;
+  const decisions = c.scenario.filter(s=>s.kind==='decision');
+  const right = decisions.filter(s => (s.choices.find(x=>x.id===state.chosen[s.id])||{}).correct).length;
+  state.results[c.id] = {specialtyID:c.specialty.id, score, total, decisionsRight:right,
+                         decisionsTotal:decisions.length, dok:c.dok};
+}
+function again(){ state.step=0; state.chosen={}; state.revealed=new Set(); state.q=0; state.answers={}; go('scenario'); }
+
+const SCREENS = {welcome, intro, test, fit, tracks, cases, scenario, assessment, dashboard, profile};
+function render(){ document.getElementById('screen').innerHTML = SCREENS[state.stage](); }
+// A module's functions are not global, and the markup uses inline handlers: expose the actions.
+Object.assign(window, {go, pickTrack, pickCase, startCase, answerTest, choose, nextStep,
+                       answerAssessment, nextQuestion, again});
+render();
+</script>
+</body>
+</html>
