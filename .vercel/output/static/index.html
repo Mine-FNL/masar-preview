@@ -179,7 +179,7 @@ function cases(){
         <div class="small">${esc(c.summary.ar)}</div>
         <div class="meta">Dok ${c.dok} · ${c.estimatedMinutes||0} دقيقة</div>
       </div>
-      <div class="strip"><span>ابدأ هذا اليوم</span><span>‹</span></div>
+      <div class="strip"><span>${state.caseId===c.id?'اخترت هذا اليوم':'اختر هذا اليوم'}</span><span>‹</span></div>
     </div>`).join('')).join('');
   return `<main><h1>اختر يوماً لتعيشه</h1>
     <div class="small">${CASES.length} حالة متاحة</div>${cards}</main>
@@ -325,7 +325,13 @@ function profile(){
 
 /* ---------------------------------------------------------------- actions */
 function go(stage){ state.stage = stage; render(); window.scrollTo(0,0); }
-function pickTrack(id){ state.track = id; state.caseId = (specialties().find(s=>s.id===id)||{cases:[CASES[0]]}).cases[0].id; render(); }
+function pickTrack(id){
+  // Pressing a path opens it. Selecting alone left the card looking dead: the author pressed every
+  // specialty on the shelf and nothing came.
+  state.track = id;
+  state.caseId = (specialties().find(s=>s.id===id)||{cases:[CASES[0]]}).cases[0].id;
+  go('cases');
+}
 function pickCase(id){ state.track = CASES.find(c=>c.id===id).specialty.id; state.caseId = id; render(); }
 function startCase(){ if(!state.caseId) state.caseId = CASES[0].id; state.step = 0; state.chosen = {}; state.revealed = new Set(); state.q = 0; state.answers = {}; go('scenario'); }
 function answerTest(id,v){ state.testAnswers[id] = v; render(); }
