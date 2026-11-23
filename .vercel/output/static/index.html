@@ -251,6 +251,16 @@ function dashboard(){
   const made = decisions.filter(s => state.chosen[s.id]).length;
   const ok = decisions.filter(s => (s.choices.find(x=>x.id===state.chosen[s.id])||{}).correct).length;
   const pct = Math.round(right*100/total);
+  // The band is content, not a rule in code: the case carries its own bands, so a harder day can
+  // set a higher bar without touching the screen.
+  const fraction = total ? right/total : 0;
+  const bands = (c.grading && c.grading.bands) || [];
+  const band = bands.find(b => fraction >= b.min && fraction < b.max) || bands[bands.length-1];
+  const bandBlock = band ? `<div class="chip" style="margin-top:12px">
+      <b>مستواك في التقييم</b>
+      <div class="acc" style="margin-top:4px">${esc(band.label.ar)}</div>
+      <div class="small" style="margin-top:6px">${esc(band.message.ar)}</div>
+    </div>` : '';
   return `<main>
     <div class="meta">نتيجتك</div>
     <h1>${esc(c.specialty.name.ar)}</h1>
@@ -261,7 +271,8 @@ function dashboard(){
     <div class="row"><span class="num">القرارات الصحيحة</span><span style="margin-inline-start:auto">${ok} / ${decisions.length}</span></div>
     <div class="row"><span class="num">الأسئلة</span><span style="margin-inline-start:auto">${right} / ${total}</span></div>
     <div class="rule"></div>
-    <div class="small">${esc(c.outcome.fitMessage.ar)}</div>
+    ${bandBlock}
+    <div class="small" style="margin-top:10px">${esc(c.outcome.fitMessage.ar)}</div>
     <div class="chip" style="margin-top:14px"><b>الخطوات التالية</b>
       <ul>${c.outcome.nextSteps.map(s=>`<li>${esc(s.ar)}</li>`).join('')}</ul></div>
     <div class="chip" onclick="go('profile')" style="cursor:pointer">ملفك عبر المسارات ‹</div>
