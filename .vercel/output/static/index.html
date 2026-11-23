@@ -57,7 +57,7 @@ img.plate{width:100%;height:170px;object-fit:cover;display:block;margin:10px 0}
   <div class="screen" id="screen"></div>
 </div>
 <script type="module">
-const DATA = await (await fetch('data.json')).json();
+const DATA = await (await fetch('data.json?v=aea29e9c3e')).json();
 const CASES = DATA.cases;
 const TEST = DATA.interest;
 const scale = TEST.scale.labels;
@@ -255,7 +255,9 @@ function dashboard(){
   // set a higher bar without touching the screen.
   const fraction = total ? right/total : 0;
   const bands = (c.grading && c.grading.bands) || [];
-  const band = bands.find(b => fraction >= b.min && fraction < b.max) || bands[bands.length-1];
+  // Bands are half-open (lower edge in, upper edge out) and the last one takes 100%, exactly as the
+  // app reads them — a perfect score that falls off the end of the scale is a student with no result.
+  const band = bands.find((b, i) => fraction >= b.min && (fraction < b.max || i === bands.length - 1));
   const bandBlock = band ? `<div class="chip" style="margin-top:12px">
       <b>مستواك في التقييم</b>
       <div class="acc" style="margin-top:4px">${esc(band.label.ar)}</div>
