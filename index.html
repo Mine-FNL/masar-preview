@@ -266,7 +266,7 @@ function dashboard(){
       <ul>${c.outcome.nextSteps.map(s=>`<li>${esc(s.ar)}</li>`).join('')}</ul></div>
     <div class="chip" onclick="go('profile')" style="cursor:pointer">ملفك عبر المسارات ‹</div>
   </main>
-  <button class="band" onclick="again()">أعد المحاولة</button>`;
+  <button class="band" onclick="go('cases')">اختر يوماً آخر <small>ثلاث حالات في هذا التخصص</small></button>`;
 }
 
 function tour(){
