@@ -67,7 +67,8 @@ const state = { stage:'welcome', track:null, caseId:null, step:0, chosen:{}, rev
 
 const bgFor = f => f ? `url('img/${f}')` : 'none';
 const setBg = f => { document.getElementById('bg').style.backgroundImage = bgFor(f); };
-const esc = s => (s||'').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const L = o => (o && typeof o === 'object' ? (o.ar || o.en || '') : (o || ''));
+const esc = s => String(s||'').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 
 function specialties(){
   const map = new Map();
@@ -109,7 +110,7 @@ function welcome(){
   </main>
   <button class="band" onclick="go('intro')">ابدأ اليوم الأول <small>لا يجمع التطبيق أي بيانات</small></button>
   <div style="text-align:center;padding:10px 0 16px">
-    <a href="#" onclick="go('tour');return false" style="color:var(--blue-deep);font-size:12px">جولة داخل قسم الطوارئ ‹</a>
+    <a href="#" onclick="state.track='emergency-medicine';window.jumpStop(0);go('tour');return false" style="color:var(--blue-deep);font-size:12px">جولة داخل قسم الطوارئ ‹</a>
   </div>`;
 }
 
@@ -181,8 +182,12 @@ function cases(){
       </div>
       <div class="strip"><span>${state.caseId===c.id?'اخترت هذا اليوم':'اختر هذا اليوم'}</span><span>‹</span></div>
     </div>`).join('')).join('');
+  const tourHere = DATA.tours[state.track];
   return `<main><h1>اختر يوماً لتعيشه</h1>
-    <div class="small">${CASES.length} حالة متاحة</div>${cards}</main>
+    <div class="small">${CASES.length} حالة متاحة</div>
+    ${tourHere ? `<div class="chip" onclick="window.jumpStop(0); window.go('tour')" style="cursor:pointer">
+      جولة داخل هذا القسم · ${tourHere.stops.length} محطات ‹</div>` : ''}
+    ${cards}</main>
   <button class="band" onclick="startCase()">ابدأ هذا اليوم</button>`;
 }
 
@@ -285,23 +290,24 @@ function dashboard(){
 }
 
 function tour(){
-  const stops = DATA.tour;
+  const chosen = DATA.tours[state.track] || DATA.tours['emergency-medicine'] || DATA.tour;
+  const stops = chosen.stops;
   const stop = stops[state.stop];
   setBg(stop.img);
   const route = stops.map((x,i) => `<button class="plain" style="flex:1;min-width:64px;padding:6px;border:1px solid var(--rule);
       background:${i===state.stop?'var(--red)':'rgba(255,255,255,.5)'};color:${i===state.stop?'#fff':'inherit'};
-      font-size:10px" onclick="window.jumpStop(${i})">${i+1}. ${esc(x.title)}</button>`).join('');
+      font-size:10px" onclick="window.jumpStop(${i})">${i+1}. ${esc(L(x.title))}</button>`).join('');
   return `<main>
-    <h1>جولة داخل الطوارئ</h1>
-    <div class="meta">${state.stop+1} من ${stops.length} — ${esc(stop.title)}</div>
+    <h1>${esc(L(chosen.title))}</h1>
+    <div class="meta">${state.stop+1} من ${stops.length} — ${esc(L(stop.title))}</div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0">${route}</div>
-    <img class="plate" style="height:220px" src="img/${stop.img}" alt="">
-    <div class="chip"><b>ماذا يحدث هنا</b><div class="small" style="margin-top:6px">${esc(stop.what)}</div></div>
-    <div class="chip"><b>ما يلاحظه الطبيب</b><div class="small" style="margin-top:6px">${esc(stop.notice)}</div></div>
+    <img class="plate" style="height:220px" src="img/${stop.image || stop.img}" alt="">
+    <div class="chip"><b>ماذا يحدث هنا</b><div class="small" style="margin-top:6px">${esc(L(stop.what))}</div></div>
+    <div class="chip"><b>ما يلاحظه الطبيب</b><div class="small" style="margin-top:6px">${esc(L(stop.notice))}</div></div>
     <div class="footer">هذه جولة مصوّرة داخل القسم — صور حقيقية بدرجة لون واحدة.</div>
   </main>
-  <button class="band" onclick="window.nextStop()">${state.stop < stops.length-1 ? 'المحطة التالية' : 'ابدأ يوماً في الطوارئ'}
-    <small>${state.stop < stops.length-1 ? '' : 'حالة: ثلاث إصابات'}</small></button>`;
+  <button class="band" onclick="window.nextStop()">${state.stop < stops.length-1 ? 'المحطة التالية' : 'ابدأ يوماً في هذا التخصص'}
+    <small>${state.stop < stops.length-1 ? '' : esc(chosen.specialtyID ? '' : '')}</small></button>`;
 }
 
 const TOUR_STAGE = 'tour';
@@ -381,7 +387,7 @@ function nextStop(){
   const n = DATA.tour.length;
   if (state.stop < n - 1){ state.stop++; render(); window.scrollTo(0,0); }
   else {
-    state.track = 'emergency-medicine';
+    if (!DATA.tours[state.track]) state.track = 'emergency-medicine';
     state.caseId = (CASES.find(c => c.specialty.id === 'emergency-medicine') || CASES[0]).id;
     state.step = 0; state.chosen = {}; state.revealed = new Set(); state.q = 0; state.answers = {};
     go('scenario');
