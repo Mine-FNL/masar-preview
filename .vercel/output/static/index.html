@@ -277,6 +277,8 @@ function dashboard(){
     <div class="small" style="margin-top:10px">${esc(c.outcome.fitMessage.ar)}</div>
     <div class="chip" style="margin-top:14px"><b>الخطوات التالية</b>
       <ul>${c.outcome.nextSteps.map(s=>`<li>${esc(s.ar)}</li>`).join('')}</ul></div>
+    <div class="chip" onclick="window.makeDayCard()" style="cursor:pointer;background:var(--red);color:#fff">
+      أنشئ بطاقة اليوم ‹</div>
     <div class="chip" onclick="go('profile')" style="cursor:pointer">ملفك عبر المسارات ‹</div>
   </main>
   <button class="band" onclick="go('cases')">اختر يوماً آخر <small>ثلاث حالات في هذا التخصص</small></button>`;
@@ -385,8 +387,129 @@ function nextStop(){
     go('scenario');
   }
 }
+/* ---------------------------------------------------- the day card (shareable) */
+// One image the student can post: the day, its numbers, the path it points at. Drawn on a canvas at
+// story size so it needs no library and no second layout to drift from the screens.
+async function makeDayCard() {
+  const c = currentCase();
+  const total = Math.max(c.assessment.length, 1);
+  const right = c.assessment.filter(q => (q.choices.find(x => x.id === state.answers[q.id]) || {}).correct === true).length;
+  const decisions = c.scenario.filter(s => s.kind === 'decision');
+  const made = decisions.filter(s => (s.choices.find(x => x.id === state.chosen[s.id]) || {}).correct).length;
+  const fraction = total ? right / total : 0;
+  const bands = (c.grading && c.grading.bands) || [];
+  const band = bands.find((b, i) => fraction >= b.min && (fraction < b.max || i === bands.length - 1));
+  const lived = live().filter(r => r.cases > 0);
+
+  const W = 1080, H = 1920;
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  const g = cv.getContext('2d');
+  g.direction = 'rtl'; g.textAlign = 'right';
+  const font = (size, weight) => `${weight || 400} ${size}px Alexandria, 'Noto Naskh Arabic', system-ui, sans-serif`;
+
+  // field
+  g.fillStyle = '#0A1F33'; g.fillRect(0, 0, W, H);
+  // the day's own photograph, washed into the field
+  const bg = c.background && c.background.file;
+  if (bg) {
+    await new Promise(res => {
+      const im = new Image();
+      im.onload = () => {
+        const scale = Math.max(W / im.width, 880 / im.height);
+        const w = im.width * scale, h = im.height * scale;
+        g.globalAlpha = 0.9;
+        g.drawImage(im, (W - w) / 2, 0, w, h);
+        g.globalAlpha = 1;
+        g.fillStyle = 'rgba(207,230,248,0.55)'; g.fillRect(0, 0, W, h);
+        // fade into the field
+        const grad = g.createLinearGradient(0, h - 420, 0, h);
+        grad.addColorStop(0, 'rgba(10,31,51,0)'); grad.addColorStop(1, 'rgba(10,31,51,1)');
+        g.fillStyle = grad; g.fillRect(0, h - 420, W, 420);
+        // the crown: a photograph at this end is usually bright, and cream type on it disappears
+        const top = g.createLinearGradient(0, 0, 0, 300);
+        top.addColorStop(0, 'rgba(10,31,51,0.92)'); top.addColorStop(1, 'rgba(10,31,51,0)');
+        g.fillStyle = top; g.fillRect(0, 0, W, 300);
+        res();
+      };
+      im.onerror = res;
+      im.src = 'img/' + bg;
+    });
+  }
+
+  const M = 72;
+  g.fillStyle = 'rgba(244,235,219,0.75)'; g.font = font(30, 500);
+  g.fillText('آفاق المستقبل', W - M, 104);
+  g.textAlign = 'left';
+  g.fillStyle = 'rgba(244,235,219,0.55)'; g.font = font(28, 300);
+  g.fillText('يوم من أيامك حتى اليوم', M, 104, W / 2);
+  g.textAlign = 'right';
+
+  g.fillStyle = 'rgba(244,235,219,0.85)'; g.font = font(54, 300);
+  g.fillText('يوم في حياة', W - M, 1060);
+
+  g.fillStyle = '#E8837A'; g.font = font(112, 700);
+  g.fillText(c.specialty.name.ar, W - M, 1180, W - 2 * M);
+
+  g.fillStyle = 'rgba(244,235,219,0.9)'; g.font = font(40, 400);
+  // the case title, wrapped to the card's width
+  const words = c.title.ar.split(' ');
+  let line = '', y = 1260;
+  for (const w of words) {
+    const test = line ? line + ' ' + w : w;
+    if (g.measureText(test).width > W - 2 * M && line) { g.fillText(line, W - M, y); y += 56; line = w; }
+    else line = test;
+  }
+  if (line) g.fillText(line, W - M, y);
+
+  // figures
+  const fy = 1490;
+  g.fillStyle = 'rgba(244,235,219,0.25)'; g.fillRect(M, fy - 120, W - 2 * M, 2);
+  g.fillStyle = '#F4EBDB'; g.font = font(72, 700);
+  g.fillText(`${right}/${total}`, W - M, fy);
+  g.fillText(`${made}/${decisions.length}`, W - M - 380, fy);
+  g.fillStyle = 'rgba(244,235,219,0.6)'; g.font = font(30, 300);
+  g.fillText('الأسئلة', W - M, fy + 46);
+  g.fillText('القرارات', W - M - 380, fy + 46);
+
+  if (band) {
+    g.font = font(42, 600);
+    const label = band.label.ar;
+    const tw = g.measureText(label).width;
+    const pad = 34;
+    g.fillStyle = '#A02B22';
+    g.fillRect(W - M - tw - pad * 2, fy + 116, tw + pad * 2, 100);
+    g.fillStyle = '#F4EBDB';
+    g.fillText(label, W - M - pad, fy + 184);
+  }
+
+  if (lived.length) {
+    g.fillStyle = 'rgba(244,235,219,0.85)'; g.font = font(38, 500);
+    g.fillText(`أقرب مسار إليّ: ${lived[0].name.ar}`, W - M, fy + 330);
+  }
+  g.fillStyle = 'rgba(244,235,219,0.5)'; g.font = font(26, 300);
+  g.fillText('جرّب يوماً في تخصص آخر · mine-fnl.github.io/masar-preview', W - M, H - 56);
+
+  showDayCard(cv.toDataURL('image/png'));
+}
+
+function showDayCard(url) {
+  const old = document.getElementById('daycard');
+  if (old) old.remove();
+  const box = document.createElement('div');
+  box.id = 'daycard';
+  box.style.cssText = 'position:fixed;inset:0;background:rgba(10,31,51,.92);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:16px';
+  box.innerHTML = `
+    <img src="${url}" style="max-height:64vh;border:1px solid rgba(244,235,219,.3)">
+    <div style="display:flex;gap:10px;width:100%;max-width:430px">
+      <a download="afaq-day-card.png" href="${url}" style="flex:1;background:#A02B22;color:#fff;padding:14px;text-align:center;text-decoration:none;font-size:15px">نزّل البطاقة</a>
+      <button onclick="document.getElementById('daycard').remove()" style="flex:1;background:none;border:1px solid rgba(244,235,219,.5);color:#F4EBDB;font:inherit;padding:14px;cursor:pointer">إغلاق</button>
+    </div>`;
+  document.body.appendChild(box);
+}
+
 Object.assign(window, {go, pickTrack, pickCase, startCase, answerTest, choose, nextStep,
-                       answerAssessment, nextQuestion, again, jumpStop, nextStop});
+                       answerAssessment, nextQuestion, again, jumpStop, nextStop, makeDayCard});
 render();
 </script>
 </body>
