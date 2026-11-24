@@ -437,12 +437,19 @@ async function makeDayCard() {
     });
   }
 
+  // a solid ink panel under the type block, feathered at its top edge
+  const panelTop = 900;
+  const feather = g.createLinearGradient(0, panelTop - 160, 0, panelTop + 40);
+  feather.addColorStop(0, 'rgba(10,31,51,0)'); feather.addColorStop(1, 'rgba(10,31,51,1)');
+  g.fillStyle = feather; g.fillRect(0, panelTop - 160, W, 200);
+  g.fillStyle = '#0A1F33'; g.fillRect(0, panelTop + 40, W, H - panelTop - 40);
+
   const M = 72;
   g.fillStyle = 'rgba(244,235,219,0.75)'; g.font = font(30, 500);
   g.fillText('آفاق المستقبل', W - M, 104);
   g.textAlign = 'left';
   g.fillStyle = 'rgba(244,235,219,0.55)'; g.font = font(28, 300);
-  g.fillText('يوم من أيامك حتى اليوم', M, 104, W / 2);
+  g.fillText('يوم من أيامك', M, 104, W / 2);
   g.textAlign = 'right';
 
   g.fillStyle = 'rgba(244,235,219,0.85)'; g.font = font(54, 300);
