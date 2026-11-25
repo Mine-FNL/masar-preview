@@ -189,6 +189,8 @@ function cases(){
       جولة داخل هذا القسم · ${tourHere.stops.length} محطات ‹</div>` : ''}
     ${DATA.tools[state.track] ? `<div class="chip" onclick="go('tools')" style="cursor:pointer">
       أدوات وأجهزة القسم · ${DATA.tools[state.track].items.length} ‹</div>` : ''}
+    ${DATA.conditions[state.track] ? `<div class="chip" onclick="go('conditions')" style="cursor:pointer">
+      أشهر الحالات في هذا القسم · ${DATA.conditions[state.track].items.length} ‹</div>` : ''}
     ${cards}</main>
   <button class="band" onclick="startCase()">ابدأ هذا اليوم</button>`;
 }
@@ -334,6 +336,27 @@ function tools(){
   <button class="band" onclick="go('cases')">اختر يوماً لتعيشه</button>`;
 }
 
+function conditions(){
+  const chosen = DATA.conditions[state.track] || DATA.conditions[Object.keys(DATA.conditions)[0]];
+  if (!chosen) return '<main><h1>لا توجد حالات بعد</h1></main>';
+  setBg('screen-fit.jpg');
+  const rows = chosen.items.map(it => `
+    <div class="card">
+      <div class="body">
+        <div style="font-weight:700">${esc(L(it.name))}</div>
+        <div class="small" style="margin-top:6px">${esc(L(it.complaint))}</div>
+        <div class="small" style="margin-top:8px;border-inline-start:2px solid #A02B22;padding-inline-start:8px">${esc(L(it.alert))}</div>
+        ${it.caseID ? `<div class="meta acc" style="margin-top:8px">عِش يوماً في هذه الحالة ‹</div>` : ''}
+      </div>
+    </div>`).join('');
+  return `<main>
+    <h1>${esc(L(chosen.title))}</h1>
+    <div class="small">${esc(L(chosen.intro))}</div>
+    ${rows}
+  </main>
+  <button class="band" onclick="go('cases')">اختر يوماً لتعيشه</button>`;
+}
+
 function profile(){
   setBg('screen-dashboard.jpg');
   const rows = live();
@@ -401,7 +424,7 @@ function record(){
 }
 function again(){ state.step=0; state.chosen={}; state.revealed=new Set(); state.q=0; state.answers={}; go('scenario'); }
 
-const SCREENS = {welcome, intro, test, fit, tracks, cases, scenario, assessment, dashboard, profile, tour, tools};
+const SCREENS = {welcome, intro, test, fit, tracks, cases, scenario, assessment, dashboard, profile, tour, tools, conditions};
 function render(){ document.getElementById('screen').innerHTML = SCREENS[state.stage](); }
 // A module's functions are not global, and the markup uses inline handlers: expose the actions.
 function jumpStop(i){ state.stop = i; render(); window.scrollTo(0,0); }
