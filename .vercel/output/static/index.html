@@ -70,6 +70,10 @@ const setBg = f => { document.getElementById('bg').style.backgroundImage = bgFor
 const L = o => (o && typeof o === 'object' ? (o.ar || o.en || '') : (o || ''));
 const esc = s => String(s||'').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 
+// The order the author set by voice: urgent and everyday first, the heart last.
+const RUNNING_ORDER = ['emergency-medicine','pediatrics','family-medicine','dermatology',
+  'general-surgery','orthopaedics','spine','physiotherapy','neurology','ophthalmology','mental-health','cardiology'];
+
 function specialties(){
   const map = new Map();
   for (const c of CASES){
@@ -77,7 +81,9 @@ function specialties(){
     if (!map.has(id)) map.set(id, {id, name:c.specialty.name, cases:[]});
     map.get(id).cases.push(c);
   }
-  return [...map.values()];
+  const all = [...map.values()];
+  const rank = id => { const i = RUNNING_ORDER.indexOf(id); return i < 0 ? 99 : i; };
+  return all.sort((a, b) => rank(a.id) - rank(b.id));
 }
 const live = () => specialties().map(s => {
   const rows = Object.values(state.results).filter(r => r.specialtyID === s.id);
