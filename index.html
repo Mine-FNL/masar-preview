@@ -57,7 +57,7 @@ img.plate{width:100%;height:170px;object-fit:cover;display:block;margin:10px 0}
   <div class="screen" id="screen"></div>
 </div>
 <script type="module">
-const DATA = await (await fetch('data.json?v=ff2d4dcb9f')).json();
+const DATA = await (await fetch('data.json?v=69b99c681e')).json();
 const CASES = DATA.cases;
 const TEST = DATA.interest;
 const scale = TEST.scale.labels;
@@ -72,9 +72,9 @@ const esc = s => String(s||'').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','
 
 // The order the author set by voice: urgent and everyday first, the heart last.
 const RUNNING_ORDER = ['emergency-medicine','pediatrics','family-medicine','dentistry','dermatology',
-  'general-surgery','orthopaedics','spine','physiotherapy','neurology','ophthalmology','mental-health','cardiology'];
+  'general-surgery','orthopaedics','spine','physiotherapy','neurology','ophthalmology','mental-health','cardiology','endocrinology','internal-medicine'];
 // The advanced paths, in the author's order, under their own heading.
-const ADVANCED_ORDER = ['robotic-surgery','endocrinology','radiology','medical-ai','laboratory','pharmacy','nursing'];
+const ADVANCED_ORDER = ['robotic-surgery','radiology','medical-ai','laboratory','pharmacy','nursing'];
 
 function specialties(){
   const map = new Map();
