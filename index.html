@@ -187,6 +187,8 @@ function cases(){
     <div class="small">${CASES.length} حالة متاحة</div>
     ${tourHere ? `<div class="chip" onclick="window.jumpStop(0); window.go('tour')" style="cursor:pointer">
       جولة داخل هذا القسم · ${tourHere.stops.length} محطات ‹</div>` : ''}
+    ${DATA.tools[state.track] ? `<div class="chip" onclick="go('tools')" style="cursor:pointer">
+      أدوات وأجهزة القسم · ${DATA.tools[state.track].items.length} ‹</div>` : ''}
     ${cards}</main>
   <button class="band" onclick="startCase()">ابدأ هذا اليوم</button>`;
 }
@@ -312,6 +314,26 @@ function tour(){
 
 const TOUR_STAGE = 'tour';
 
+function tools(){
+  const chosen = DATA.tools[state.track] || DATA.tools[Object.keys(DATA.tools)[0]];
+  if (!chosen) return '<main><h1>لا توجد أدوات بعد</h1></main>';
+  setBg('screen-fit.jpg');
+  const cards = chosen.items.map(it => `
+    <div class="card">
+      <img src="img/${it.image}" alt="" style="height:190px">
+      <div class="body">
+        <div style="font-weight:700">${esc(L(it.name))}</div>
+        <div class="small">${esc(L(it.use))}</div>
+      </div>
+    </div>`).join('');
+  return `<main>
+    <h1>${esc(L(chosen.title))}</h1>
+    <div class="small">${esc(L(chosen.intro))}</div>
+    ${cards}
+  </main>
+  <button class="band" onclick="go('cases')">اختر يوماً لتعيشه</button>`;
+}
+
 function profile(){
   setBg('screen-dashboard.jpg');
   const rows = live();
@@ -379,7 +401,7 @@ function record(){
 }
 function again(){ state.step=0; state.chosen={}; state.revealed=new Set(); state.q=0; state.answers={}; go('scenario'); }
 
-const SCREENS = {welcome, intro, test, fit, tracks, cases, scenario, assessment, dashboard, profile, tour};
+const SCREENS = {welcome, intro, test, fit, tracks, cases, scenario, assessment, dashboard, profile, tour, tools};
 function render(){ document.getElementById('screen').innerHTML = SCREENS[state.stage](); }
 // A module's functions are not global, and the markup uses inline handlers: expose the actions.
 function jumpStop(i){ state.stop = i; render(); window.scrollTo(0,0); }
