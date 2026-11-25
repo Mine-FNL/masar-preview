@@ -57,7 +57,7 @@ img.plate{width:100%;height:170px;object-fit:cover;display:block;margin:10px 0}
   <div class="screen" id="screen"></div>
 </div>
 <script type="module">
-const DATA = await (await fetch('data.json?v=07f0d5bf02')).json();
+const DATA = await (await fetch('data.json?v=ff2d4dcb9f')).json();
 const CASES = DATA.cases;
 const TEST = DATA.interest;
 const scale = TEST.scale.labels;
@@ -73,6 +73,8 @@ const esc = s => String(s||'').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','
 // The order the author set by voice: urgent and everyday first, the heart last.
 const RUNNING_ORDER = ['emergency-medicine','pediatrics','family-medicine','dentistry','dermatology',
   'general-surgery','orthopaedics','spine','physiotherapy','neurology','ophthalmology','mental-health','cardiology'];
+// The advanced paths, in the author's order, under their own heading.
+const ADVANCED_ORDER = ['robotic-surgery','endocrinology','radiology','medical-ai','laboratory','pharmacy','nursing'];
 
 function specialties(){
   const map = new Map();
@@ -82,7 +84,12 @@ function specialties(){
     map.get(id).cases.push(c);
   }
   const all = [...map.values()];
-  const rank = id => { const i = RUNNING_ORDER.indexOf(id); return i < 0 ? 99 : i; };
+  const rank = id => {
+    const a = ADVANCED_ORDER.indexOf(id);
+    if (a >= 0) return 1000 + a;
+    const c = RUNNING_ORDER.indexOf(id);
+    return c < 0 ? 900 : c;
+  };
   return all.sort((a, b) => rank(a.id) - rank(b.id));
 }
 const live = () => specialties().map(s => {
@@ -161,7 +168,12 @@ function fit(){
 
 function tracks(){
   setBg('screen-fit.jpg');
-  const cards = specialties().map(s => `
+  const list = specialties();
+  const firstAdvanced = list.findIndex(s => ADVANCED_ORDER.includes(s.id));
+  const cards = list.map((s, i) => `
+    ${i === firstAdvanced ? `<div class="rule" style="margin-top:18px"></div>
+      <div class="acc" style="font-weight:700">مسارات متقدمة</div>
+      <div class="small" style="margin-bottom:10px">تخصصات تعمل بالتقنية والتحليل: الروبوتات، والتصوير، والمختبر، والذكاء الصناعي.</div>` : ''}` + `
     <div class="card ${state.track===s.id?'sel':''}" onclick="pickTrack('${s.id}')">
       ${s.cases[0].background ? `<img src="img/${s.cases[0].background.file}" alt="">` : ''}
       <div class="body">
