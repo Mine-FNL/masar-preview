@@ -150,7 +150,7 @@ function test(){
       <div style="margin:10px 0 2px">${esc((idx+1)+'. '+it.text.ar)}</div>
       <div class="optscale">${chips}</div>`;
   }).join('');
-  const pick = `<div class="optscale" style="margin:4px 0 14px"><button class="${state.testDepth==='advanced'?'':'on'}" onclick="setDepth('starter')">٢١ بنداً · سريع</button><button class="${state.testDepth==='advanced'?'on':''}" onclick="setDepth('advanced')">القائمة الكاملة · ٦٣</button></div>`;
+  const pick = `<div class="optscale" style="margin:4px 0 14px"><button class="${state.testDepth==='advanced'?'':'on'}" onclick="window.setDepth('starter')">٢١ بنداً · سريع</button><button class="${state.testDepth==='advanced'?'on':''}" onclick="window.setDepth('advanced')">القائمة الكاملة · ٦٣</button></div>`;
   return `<main>${pick}${rows}<div class="footer">${answered} / ${list.items.length}</div></main>
   <button class="band" ${answered < list.items.length ? 'disabled' : ''}
     onclick="go('fit')">أظهر النتيجة <small>${answered < TEST.items.length ? 'أكمل الأسئلة أولاً' : 'جاهز'}</small></button>`;
@@ -594,7 +594,7 @@ function showDayCard(url) {
   document.body.appendChild(box);
 }
 
-Object.assign(window, {go, pickTrack, pickCase, startCase, answerTest, choose, nextStep,
+Object.assign(window, {go, pickTrack, pickCase, startCase, setDepth, answerTest, choose, nextStep,
                        answerAssessment, nextQuestion, again, jumpStop, nextStop, makeDayCard});
 render();
 </script>
