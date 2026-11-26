@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>خريطة مسار — المسارات والعائلات</title>
+<style>
+  * { box-sizing:border-box }
+  body { margin:0; background:radial-gradient(1200px 700px at 78% -12%, #FFFFFF 0%, #F4F0E8 58%, #EAE4D9 100%);
+         color:#0A1F33; font-family:-apple-system,"SF Arabic","Segoe UI",Tahoma,sans-serif }
+  .wrap { max-width:700px; margin:0 auto; padding:18px 14px 48px }
+  h1 { margin:0 0 4px; font-size:24px; letter-spacing:-.3px }
+  .sub { color:#5A6B7B; font-size:13.5px; line-height:1.85; margin-bottom:14px }
+  .top { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:16px }
+  .pill { background:#fff; border-radius:999px; padding:8px 14px; font-size:13px;
+           box-shadow:0 1px 2px rgba(10,31,51,.07) }
+  .pill b { font-size:15px }
+  .switch { text-decoration:none; background:#0A1F33; color:#fff; border-radius:999px;
+             padding:9px 16px; font-size:13.5px }
+  .card { background:#fff; border-radius:18px; padding:8px 6px 4px;
+           box-shadow:0 1px 2px rgba(10,31,51,.06), 0 18px 44px rgba(10,31,51,.08);
+           overflow:hidden; max-width:100% }
+  svg { display:block; margin:0 auto; width:100%; height:auto }
+  image { border-radius:8px }
+  a { text-decoration:none }
+  .branch:hover rect:first-of-type { filter:saturate(1.12) }
+  footer { margin-top:24px; color:#5A6B7B; font-size:12.5px; line-height:1.9 }
+</style></head><body>
+<div class="wrap">
+  <h1>خريطة مسار</h1>
+  <div class="sub">شجرة المسارات: <b>10</b> مساراً، <b>120</b> تخصصاً، <b>360</b> حالة.
+  كل فرع بلونه وأيقونته وصوره — تُرسم من ملف الرفّ ومن ملفات الحالات.</div>
+  <div class="top">
+    <div class="pill">تخصص فيه محتوى <b>120/120</b></div>
+    <div class="pill">حالات <b>360</b></div>
+    <div class="pill">تقدّم <b>100%</b></div>
+    <a class="switch" href="map-full.html">النسخة المتكاملة — كل التخصصات ←</a>
+  </div>
+  <div class="card">
+    <svg viewBox="0 0 420 2010" width="420" height="2010" role="img"
+         aria-label="خريطة المسارات">
+      <path d="M 38 40 C 38 1005.0, 38 1005.0, 38 1980"
+            stroke="#0A1F33" stroke-width="4" fill="none" opacity=".25"/>
+      <circle cx="38" cy="34" r="7" fill="#0A1F33" opacity=".5"/>
+<path d="M 64 154 C 40 154, 40 154, 64 154" stroke="#7FAFD6" stroke-width="3" fill="none" opacity=".55"/>
+<g class="branch">
+<rect x="64" y="70" width="300" height="128" rx="22" fill="#CFE6F8"/>
+<circle cx="102" cy="104" r="21" fill="#fff" opacity=".85"/>
+<g transform="translate(102 104) scale(1.0833) translate(-12 -12)" stroke="#0E2A47" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v5a4 4 0 0 0 8 0V3"/><path d="M11 12v3a5 5 0 0 0 10 0v-2"/><circle cx="21" cy="10" r="2.2"/></g>
+<text x="134" y="101" fill="#0E2A47" font-size="17" font-weight="700">الطب</text>
+<text x="134" y="120" fill="#0E2A47" font-size="12" opacity=".75">21/21 تخصصاً</text>
+<image href="img/spine-01.jpg" x="260" y="84" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<image href="img/spine-02.jpg" x="294" y="84" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<image href="img/cardiology-cover.jpg" x="328" y="84" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<path d="M 214 131 C 244 131, 66 131, 96 131" stroke="#7FAFD6" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="116" width="330" height="26" rx="13" fill="#CFE6F8" opacity=".9"/>
+<text x="110" y="134" fill="#0E2A47" font-size="13.5" font-weight="600">مسارات الطب</text>
+<text x="412" y="134" fill="#0E2A47" font-size="11.5" opacity=".7" text-anchor="end">15</text>
+<path d="M 214 161 C 244 161, 66 161, 96 161" stroke="#7FAFD6" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="146" width="330" height="26" rx="13" fill="#CFE6F8" opacity=".9"/>
+<text x="110" y="164" fill="#0E2A47" font-size="13.5" font-weight="600">مسارات متقدمة</text>
+<text x="412" y="164" fill="#0E2A47" font-size="11.5" opacity=".7" text-anchor="end">6</text>
+</g>
+<path d="M 64 368 C 40 368, 40 368, 64 368" stroke="#D79B4E" stroke-width="3" fill="none" opacity=".55"/>
+<g class="branch">
+<rect x="64" y="224" width="300" height="248" rx="22" fill="#F6DFC6"/>
+<circle cx="102" cy="258" r="21" fill="#fff" opacity=".85"/>
+<g transform="translate(102 258) scale(1.0833) translate(-12 -12)" stroke="#5A3208" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M10 3v3M14 3v3M10 18v3M14 18v3M3 10h3M3 14h3M18 10h3M18 14h3"/></g>
+<text x="134" y="255" fill="#5A3208" font-size="17" font-weight="700">التقني</text>
+<text x="134" y="274" fill="#5A3208" font-size="12" opacity=".75">23/23 تخصصاً</text>
+<path d="M 214 285 C 244 285, 66 285, 96 285" stroke="#D79B4E" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="270" width="330" height="26" rx="13" fill="#F6DFC6" opacity=".9"/>
+<text x="110" y="288" fill="#5A3208" font-size="13.5" font-weight="600">الحاسوب والشبكات</text>
+<text x="412" y="288" fill="#5A3208" font-size="11.5" opacity=".7" text-anchor="end">5</text>
+<path d="M 214 315 C 244 315, 66 315, 96 315" stroke="#D79B4E" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="300" width="330" height="26" rx="13" fill="#F6DFC6" opacity=".9"/>
+<text x="110" y="318" fill="#5A3208" font-size="13.5" font-weight="600">الإلكترونيات والكهرباء</text>
+<text x="412" y="318" fill="#5A3208" font-size="11.5" opacity=".7" text-anchor="end">4</text>
+<path d="M 214 345 C 244 345, 66 345, 96 345" stroke="#D79B4E" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="330" width="330" height="26" rx="13" fill="#F6DFC6" opacity=".9"/>
+<text x="110" y="348" fill="#5A3208" font-size="13.5" font-weight="600">الميكانيكا والصناعة</text>
+<text x="412" y="348" fill="#5A3208" font-size="11.5" opacity=".7" text-anchor="end">3</text>
+<path d="M 214 375 C 244 375, 66 375, 96 375" stroke="#D79B4E" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="360" width="330" height="26" rx="13" fill="#F6DFC6" opacity=".9"/>
+<text x="110" y="378" fill="#5A3208" font-size="13.5" font-weight="600">البناء والمساحة</text>
+<text x="412" y="378" fill="#5A3208" font-size="11.5" opacity=".7" text-anchor="end">3</text>
+<path d="M 214 405 C 244 405, 66 405, 96 405" stroke="#D79B4E" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="390" width="330" height="26" rx="13" fill="#F6DFC6" opacity=".9"/>
+<text x="110" y="408" fill="#5A3208" font-size="13.5" font-weight="600">الطاقة والبيئة</text>
+<text x="412" y="408" fill="#5A3208" font-size="11.5" opacity=".7" text-anchor="end">3</text>
+<path d="M 214 435 C 244 435, 66 435, 96 435" stroke="#D79B4E" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="420" width="330" height="26" rx="13" fill="#F6DFC6" opacity=".9"/>
+<text x="110" y="438" fill="#5A3208" font-size="13.5" font-weight="600">التقني الصحي</text>
+<text x="412" y="438" fill="#5A3208" font-size="11.5" opacity=".7" text-anchor="end">5</text>
+</g>
+<path d="M 64 642 C 40 642, 40 642, 64 642" stroke="#74A98A" stroke-width="3" fill="none" opacity=".55"/>
+<g class="branch">
+<rect x="64" y="498" width="300" height="248" rx="22" fill="#D7E8DC"/>
+<circle cx="102" cy="532" r="21" fill="#fff" opacity=".85"/>
+<g transform="translate(102 532) scale(1.0833) translate(-12 -12)" stroke="#123A26" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.6l1.5 2.6 3-.7.6 3 2.7 1.4-1.6 2.6 1.6 2.6-2.7 1.4-.6 3-3-.7L12 21.4l-1.5-2.6-3 .7-.6-3-2.7-1.4L5.7 12 4.2 9.4l2.7-1.4.6-3 3 .7z"/></g>
+<text x="134" y="529" fill="#123A26" font-size="17" font-weight="700">الهندسة</text>
+<text x="134" y="548" fill="#123A26" font-size="12" opacity=".75">24/24 تخصصاً</text>
+<image href="img/eng-marine-01.jpg" x="260" y="512" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<image href="img/eng-marine-02.jpg" x="294" y="512" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<image href="img/eng-comms-01.jpg" x="328" y="512" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<path d="M 214 559 C 244 559, 66 559, 96 559" stroke="#74A98A" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="544" width="330" height="26" rx="13" fill="#D7E8DC" opacity=".9"/>
+<text x="110" y="562" fill="#123A26" font-size="13.5" font-weight="600">الهندسة الميكانيكية</text>
+<text x="412" y="562" fill="#123A26" font-size="11.5" opacity=".7" text-anchor="end">4</text>
+<path d="M 214 589 C 244 589, 66 589, 96 589" stroke="#74A98A" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="574" width="330" height="26" rx="13" fill="#D7E8DC" opacity=".9"/>
+<text x="110" y="592" fill="#123A26" font-size="13.5" font-weight="600">الكهربائية والحاسوب</text>
+<text x="412" y="592" fill="#123A26" font-size="11.5" opacity=".7" text-anchor="end">4</text>
+<path d="M 214 619 C 244 619, 66 619, 96 619" stroke="#74A98A" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="604" width="330" height="26" rx="13" fill="#D7E8DC" opacity=".9"/>
+<text x="110" y="622" fill="#123A26" font-size="13.5" font-weight="600">المدنية والبنية</text>
+<text x="412" y="622" fill="#123A26" font-size="11.5" opacity=".7" text-anchor="end">4</text>
+<path d="M 214 649 C 244 649, 66 649, 96 649" stroke="#74A98A" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="634" width="330" height="26" rx="13" fill="#D7E8DC" opacity=".9"/>
+<text x="110" y="652" fill="#123A26" font-size="13.5" font-weight="600">الكيميائية والمواد</text>
+<text x="412" y="652" fill="#123A26" font-size="11.5" opacity=".7" text-anchor="end">4</text>
+<path d="M 214 679 C 244 679, 66 679, 96 679" stroke="#74A98A" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="664" width="330" height="26" rx="13" fill="#D7E8DC" opacity=".9"/>
+<text x="110" y="682" fill="#123A26" font-size="13.5" font-weight="600">الحيوية والطبية</text>
+<text x="412" y="682" fill="#123A26" font-size="11.5" opacity=".7" text-anchor="end">4</text>
+<path d="M 214 709 C 244 709, 66 709, 96 709" stroke="#74A98A" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="694" width="330" height="26" rx="13" fill="#D7E8DC" opacity=".9"/>
+<text x="110" y="712" fill="#123A26" font-size="13.5" font-weight="600">الصناعية والمساندة</text>
+<text x="412" y="712" fill="#123A26" font-size="11.5" opacity=".7" text-anchor="end">4</text>
+</g>
+<path d="M 64 871 C 40 871, 40 871, 64 871" stroke="#9B8CC9" stroke-width="3" fill="none" opacity=".55"/>
+<g class="branch">
+<rect x="64" y="772" width="300" height="158" rx="22" fill="#DED7F2"/>
+<circle cx="102" cy="806" r="21" fill="#fff" opacity=".85"/>
+<g transform="translate(102 806) scale(1.0833) translate(-12 -12)" stroke="#2A1A46" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6.5" rx="7" ry="3"/><path d="M5 6.5v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5"/><path d="M5 11.5v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5"/></g>
+<text x="134" y="803" fill="#2A1A46" font-size="17" font-weight="700">الأعمال والمال</text>
+<text x="134" y="822" fill="#2A1A46" font-size="12" opacity=".75">10/10 تخصصاً</text>
+<image href="img/accounting-01.jpg" x="260" y="786" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<image href="img/accounting-02.jpg" x="294" y="786" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<image href="img/audit-01.jpg" x="328" y="786" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<path d="M 214 833 C 244 833, 66 833, 96 833" stroke="#9B8CC9" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="818" width="330" height="26" rx="13" fill="#DED7F2" opacity=".9"/>
+<text x="110" y="836" fill="#2A1A46" font-size="13.5" font-weight="600">المال والمحاسبة</text>
+<text x="412" y="836" fill="#2A1A46" font-size="11.5" opacity=".7" text-anchor="end">5</text>
+<path d="M 214 863 C 244 863, 66 863, 96 863" stroke="#9B8CC9" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="848" width="330" height="26" rx="13" fill="#DED7F2" opacity=".9"/>
+<text x="110" y="866" fill="#2A1A46" font-size="13.5" font-weight="600">الإدارة والأشخاص</text>
+<text x="412" y="866" fill="#2A1A46" font-size="11.5" opacity=".7" text-anchor="end">2</text>
+<path d="M 214 893 C 244 893, 66 893, 96 893" stroke="#9B8CC9" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="878" width="330" height="26" rx="13" fill="#DED7F2" opacity=".9"/>
+<text x="110" y="896" fill="#2A1A46" font-size="13.5" font-weight="600">التجارة والتسويق</text>
+<text x="412" y="896" fill="#2A1A46" font-size="11.5" opacity=".7" text-anchor="end">3</text>
+</g>
+<path d="M 64 1055 C 40 1055, 40 1055, 64 1055" stroke="#6FB3AC" stroke-width="3" fill="none" opacity=".55"/>
+<g class="branch">
+<rect x="64" y="956" width="300" height="158" rx="22" fill="#D2E9E6"/>
+<circle cx="102" cy="990" r="21" fill="#fff" opacity=".85"/>
+<g transform="translate(102 990) scale(1.0833) translate(-12 -12)" stroke="#08262A" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v17M7 20h10"/><path d="M4 8h16"/><path d="M4 8l-2 5a3 3 0 0 0 6 0z"/><path d="M20 8l-2 5a3 3 0 0 0 6 0z" transform="translate(-2,0)"/></g>
+<text x="134" y="987" fill="#08262A" font-size="17" font-weight="700">القانون والمجتمع</text>
+<text x="134" y="1006" fill="#08262A" font-size="12" opacity=".75">7/7 تخصصاً</text>
+<image href="img/lawyer-01.jpg" x="260" y="970" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<image href="img/lawyer-02.jpg" x="294" y="970" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<image href="img/prosecution-01.jpg" x="328" y="970" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<path d="M 214 1017 C 244 1017, 66 1017, 96 1017" stroke="#6FB3AC" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="1002" width="330" height="26" rx="13" fill="#D2E9E6" opacity=".9"/>
+<text x="110" y="1020" fill="#08262A" font-size="13.5" font-weight="600">القانون</text>
+<text x="412" y="1020" fill="#08262A" font-size="11.5" opacity=".7" text-anchor="end">2</text>
+<path d="M 214 1047 C 244 1047, 66 1047, 96 1047" stroke="#6FB3AC" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="1032" width="330" height="26" rx="13" fill="#D2E9E6" opacity=".9"/>
+<text x="110" y="1050" fill="#08262A" font-size="13.5" font-weight="600">الحماية والإنقاذ</text>
+<text x="412" y="1050" fill="#08262A" font-size="11.5" opacity=".7" text-anchor="end">2</text>
+<path d="M 214 1077 C 244 1077, 66 1077, 96 1077" stroke="#6FB3AC" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="1062" width="330" height="26" rx="13" fill="#D2E9E6" opacity=".9"/>
+<text x="110" y="1080" fill="#08262A" font-size="13.5" font-weight="600">الإدارة العامة والمجتمع</text>
+<text x="412" y="1080" fill="#08262A" font-size="11.5" opacity=".7" text-anchor="end">3</text>
+</g>
+<path d="M 64 1224 C 40 1224, 40 1224, 64 1224" stroke="#D3B45E" stroke-width="3" fill="none" opacity=".55"/>
+<g class="branch">
+<rect x="64" y="1140" width="300" height="128" rx="22" fill="#F3E6C4"/>
+<circle cx="102" cy="1174" r="21" fill="#fff" opacity=".85"/>
+<g transform="translate(102 1174) scale(1.0833) translate(-12 -12)" stroke="#302208" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H19v3H6.5"/></g>
+<text x="134" y="1171" fill="#302208" font-size="17" font-weight="700">التعليم</text>
+<text x="134" y="1190" fill="#302208" font-size="12" opacity=".75">7/7 تخصصاً</text>
+<image href="img/primary-teacher-01.jpg" x="260" y="1154" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<image href="img/primary-teacher-02.jpg" x="294" y="1154" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<image href="img/math-teacher-01.jpg" x="328" y="1154" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<path d="M 214 1201 C 244 1201, 66 1201, 96 1201" stroke="#D3B45E" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="1186" width="330" height="26" rx="13" fill="#F3E6C4" opacity=".9"/>
+<text x="110" y="1204" fill="#302208" font-size="13.5" font-weight="600">التدريس</text>
+<text x="412" y="1204" fill="#302208" font-size="11.5" opacity=".7" text-anchor="end">4</text>
+<path d="M 214 1231 C 244 1231, 66 1231, 96 1231" stroke="#D3B45E" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="1216" width="330" height="26" rx="13" fill="#F3E6C4" opacity=".9"/>
+<text x="110" y="1234" fill="#302208" font-size="13.5" font-weight="600">الدعم التربوي</text>
+<text x="412" y="1234" fill="#302208" font-size="11.5" opacity=".7" text-anchor="end">3</text>
+</g>
+<path d="M 64 1393 C 40 1393, 40 1393, 64 1393" stroke="#D18BA1" stroke-width="3" fill="none" opacity=".55"/>
+<g class="branch">
+<rect x="64" y="1294" width="300" height="158" rx="22" fill="#F5DDE4"/>
+<circle cx="102" cy="1328" r="21" fill="#fff" opacity=".85"/>
+<g transform="translate(102 1328) scale(1.0833) translate(-12 -12)" stroke="#30141E" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="12" rx="2.5"/><circle cx="12" cy="13" r="3.6"/><path d="M9 7l1.4-2.4h3.2L15 7"/></g>
+<text x="134" y="1325" fill="#30141E" font-size="17" font-weight="700">الإعلام والتصميم</text>
+<text x="134" y="1344" fill="#30141E" font-size="12" opacity=".75">8/8 تخصصاً</text>
+<image href="img/journalism-01.jpg" x="260" y="1308" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<image href="img/journalism-02.jpg" x="294" y="1308" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<image href="img/photography-01.jpg" x="328" y="1308" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<path d="M 214 1355 C 244 1355, 66 1355, 96 1355" stroke="#D18BA1" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="1340" width="330" height="26" rx="13" fill="#F5DDE4" opacity=".9"/>
+<text x="110" y="1358" fill="#30141E" font-size="13.5" font-weight="600">الإعلام</text>
+<text x="412" y="1358" fill="#30141E" font-size="11.5" opacity=".7" text-anchor="end">3</text>
+<path d="M 214 1385 C 244 1385, 66 1385, 96 1385" stroke="#D18BA1" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="1370" width="330" height="26" rx="13" fill="#F5DDE4" opacity=".9"/>
+<text x="110" y="1388" fill="#30141E" font-size="13.5" font-weight="600">التصميم</text>
+<text x="412" y="1388" fill="#30141E" font-size="11.5" opacity=".7" text-anchor="end">3</text>
+<path d="M 214 1415 C 244 1415, 66 1415, 96 1415" stroke="#D18BA1" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="1400" width="330" height="26" rx="13" fill="#F5DDE4" opacity=".9"/>
+<text x="110" y="1418" fill="#30141E" font-size="13.5" font-weight="600">اللغة والتواصل</text>
+<text x="412" y="1418" fill="#30141E" font-size="11.5" opacity=".7" text-anchor="end">2</text>
+</g>
+<path d="M 64 1577 C 40 1577, 40 1577, 64 1577" stroke="#7E93AE" stroke-width="3" fill="none" opacity=".55"/>
+<g class="branch">
+<rect x="64" y="1478" width="300" height="158" rx="22" fill="#DCE3EC"/>
+<circle cx="102" cy="1512" r="21" fill="#fff" opacity=".85"/>
+<g transform="translate(102 1512) scale(1.0833) translate(-12 -12)" stroke="#141C28" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.2L5.6 17A2.6 2.6 0 0 0 8 21h8a2.6 2.6 0 0 0 2.4-4L14 9.2V3"/><path d="M7.4 14.5h9.2"/></g>
+<text x="134" y="1509" fill="#141C28" font-size="17" font-weight="700">العلوم والبحث</text>
+<text x="134" y="1528" fill="#141C28" font-size="12" opacity=".75">8/8 تخصصاً</text>
+<image href="img/physics-01.jpg" x="260" y="1492" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<image href="img/physics-02.jpg" x="294" y="1492" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<image href="img/chemistry-01.jpg" x="328" y="1492" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<path d="M 214 1539 C 244 1539, 66 1539, 96 1539" stroke="#7E93AE" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="1524" width="330" height="26" rx="13" fill="#DCE3EC" opacity=".9"/>
+<text x="110" y="1542" fill="#141C28" font-size="13.5" font-weight="600">العلوم الطبيعية</text>
+<text x="412" y="1542" fill="#141C28" font-size="11.5" opacity=".7" text-anchor="end">3</text>
+<path d="M 214 1569 C 244 1569, 66 1569, 96 1569" stroke="#7E93AE" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="1554" width="330" height="26" rx="13" fill="#DCE3EC" opacity=".9"/>
+<text x="110" y="1572" fill="#141C28" font-size="13.5" font-weight="600">علوم الحياة والأرض</text>
+<text x="412" y="1572" fill="#141C28" font-size="11.5" opacity=".7" text-anchor="end">3</text>
+<path d="M 214 1599 C 244 1599, 66 1599, 96 1599" stroke="#7E93AE" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="1584" width="330" height="26" rx="13" fill="#DCE3EC" opacity=".9"/>
+<text x="110" y="1602" fill="#141C28" font-size="13.5" font-weight="600">الرياضيات والإحصاء</text>
+<text x="412" y="1602" fill="#141C28" font-size="11.5" opacity=".7" text-anchor="end">2</text>
+</g>
+<path d="M 64 1761 C 40 1761, 40 1761, 64 1761" stroke="#D08A6C" stroke-width="3" fill="none" opacity=".55"/>
+<g class="branch">
+<rect x="64" y="1662" width="300" height="158" rx="22" fill="#F7DCD2"/>
+<circle cx="102" cy="1696" r="21" fill="#fff" opacity=".85"/>
+<g transform="translate(102 1696) scale(1.0833) translate(-12 -12)" stroke="#34160E" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14h18"/><path d="M5 14a7 7 0 0 1 14 0"/><path d="M12 4v3"/><path d="M4 18h16"/></g>
+<text x="134" y="1693" fill="#34160E" font-size="17" font-weight="700">الخدمات والضيافة</text>
+<text x="134" y="1712" fill="#34160E" font-size="12" opacity=".75">7/7 تخصصاً</text>
+<image href="img/chef-01.jpg" x="260" y="1676" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<image href="img/chef-02.jpg" x="294" y="1676" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<image href="img/pastry-01.jpg" x="328" y="1676" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<path d="M 214 1723 C 244 1723, 66 1723, 96 1723" stroke="#D08A6C" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="1708" width="330" height="26" rx="13" fill="#F7DCD2" opacity=".9"/>
+<text x="110" y="1726" fill="#34160E" font-size="13.5" font-weight="600">المطبخ</text>
+<text x="412" y="1726" fill="#34160E" font-size="11.5" opacity=".7" text-anchor="end">2</text>
+<path d="M 214 1753 C 244 1753, 66 1753, 96 1753" stroke="#D08A6C" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="1738" width="330" height="26" rx="13" fill="#F7DCD2" opacity=".9"/>
+<text x="110" y="1756" fill="#34160E" font-size="13.5" font-weight="600">الضيافة والسياحة</text>
+<text x="412" y="1756" fill="#34160E" font-size="11.5" opacity=".7" text-anchor="end">3</text>
+<path d="M 214 1783 C 244 1783, 66 1783, 96 1783" stroke="#D08A6C" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="1768" width="330" height="26" rx="13" fill="#F7DCD2" opacity=".9"/>
+<text x="110" y="1786" fill="#34160E" font-size="13.5" font-weight="600">الخدمات الشخصية</text>
+<text x="412" y="1786" fill="#34160E" font-size="11.5" opacity=".7" text-anchor="end">2</text>
+</g>
+<path d="M 64 1930 C 40 1930, 40 1930, 64 1930" stroke="#A1917A" stroke-width="3" fill="none" opacity=".55"/>
+<g class="branch">
+<rect x="64" y="1846" width="300" height="128" rx="22" fill="#EDE6DA"/>
+<circle cx="102" cy="1880" r="21" fill="#fff" opacity=".85"/>
+<g transform="translate(102 1880) scale(1.0833) translate(-12 -12)" stroke="#282216" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.2-4.2L16.4 4.6a2.3 2.3 0 0 1 3.2 3.2L8.4 19z"/><path d="M14.6 6.4l3.2 3.2"/></g>
+<text x="134" y="1877" fill="#282216" font-size="17" font-weight="700">الكتابة والمعلومات</text>
+<text x="134" y="1896" fill="#282216" font-size="12" opacity=".75">5/5 تخصصاً</text>
+<image href="img/editorial-01.jpg" x="260" y="1860" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<image href="img/editorial-02.jpg" x="294" y="1860" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<image href="img/authoring-01.jpg" x="328" y="1860" width="30" height="44" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8)"/>
+<path d="M 214 1907 C 244 1907, 66 1907, 96 1907" stroke="#A1917A" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="1892" width="330" height="26" rx="13" fill="#EDE6DA" opacity=".9"/>
+<text x="110" y="1910" fill="#282216" font-size="13.5" font-weight="600">الكتابة والمحتوى</text>
+<text x="412" y="1910" fill="#282216" font-size="11.5" opacity=".7" text-anchor="end">3</text>
+<path d="M 214 1937 C 244 1937, 66 1937, 96 1937" stroke="#A1917A" stroke-width="1.6" fill="none" opacity=".5"/>
+<rect x="96" y="1922" width="330" height="26" rx="13" fill="#EDE6DA" opacity=".9"/>
+<text x="110" y="1940" fill="#282216" font-size="13.5" font-weight="600">المكتبات والوثائق</text>
+<text x="412" y="1940" fill="#282216" font-size="11.5" opacity=".7" text-anchor="end">2</text>
+</g>
+    </svg>
+  </div>
+  <footer>نقطة ذهبية = التخصص مُدرج وحالاته لم تُكتب بعد. الصور المستعملة صور فعلية موجودة في التطبيق.</footer>
+</div></body></html>
