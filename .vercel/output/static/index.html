@@ -126,6 +126,86 @@ function interestLean(sid){
 const currentCase = () => CASES.find(c => c.id === state.caseId) || CASES[0];
 const T = k => (window.__l10n = window.__l10n || {})[k] || k;
 
+/* --------------------------------------------------------- the Holland page
+   A second diagnostic with its own entrance and its own stages. It asks about the person, not about a
+   specialty, so its result can point into any of the three colleges. */
+function hollandIntro(){
+  setBg('screen-intro.jpg');
+  const n = (DATA.holland?.items || []).length;
+  return `<main>
+    <div class="meta">اختبار الميول المهنية</div>
+    <h1>ستّة أسئلة عنك<br><span class="acc">لا عن تخصص</span></h1>
+    <p class="lead">${n} عبارة قصيرة. اختر ما يشبهك، ولا تفكّر طويلاً: لا صواب ولا خطأ.</p>
+    <div class="rule"></div>
+    <p class="small">النتيجة تصنّف ميلك إلى ستة أنماط، ثم تدلّك على المسارات التي تناسب كل نمط — في الطب والهندسة والتقنية.</p>
+  </main>
+  <button class="band" onclick="go('hollandTest')">ابدأ الاختبار</button>`;
+}
+
+function hollandTest(){
+  setBg('screen-test.jpg');
+  const list = DATA.holland?.statements || [];
+  const rows = list.map((st, idx) => {
+    const chosen = state.holland[st.id];
+    const chips = scale.map(s => `<button class="${chosen===s.value?'on':''}"
+        onclick="answerHolland('${st.id}',${s.value})">${esc(s.text.ar)}</button>`).join('');
+    return `<div class="rule"></div>
+      <div style="margin:10px 0 2px">${esc((idx+1)+'. '+st.text.ar)}</div>
+      <div class="optscale">${chips}</div>`;
+  }).join('');
+  const answered = Object.keys(state.holland).length;
+  return `<main>${rows}<div class="footer">${answered} / ${list.length}</div></main>
+  <button class="band" ${answered < list.length ? 'disabled' : ''} onclick="go('hollandResult')">اعرض نتيجتي</button>`;
+}
+
+/// The score for one pattern: the average answer across its statements, 0..1.
+function hollandScore(patternID){
+  const mine = (DATA.holland?.items || []).filter(s => s.type === patternID || s.pattern === patternID);
+  if (!mine.length) return 0;
+  const sum = mine.reduce((a, s) => a + (state.holland[s.id] || 0), 0);
+  return sum / (mine.length * maxScale);
+}
+
+function hollandResult(){
+  setBg('screen-fit.jpg');
+  const list = (DATA.holland?.types || DATA.holland?.patterns || []).map(t => ({...t, score: hollandScore(t.id)}))
+    .sort((a, b) => b.score - a.score);
+  const top = list[0];
+  const bars = list.map(t => `<div style="margin:10px 0 4px">${esc(t.name.ar)}
+      <span class="small">${Math.round(t.score*100)}%</span></div>
+    <div style="height:10px;border-radius:5px;background:rgba(14,42,71,.14)">
+      <div style="height:10px;border-radius:5px;background:var(--blue-deep);width:${Math.max(3,Math.round(t.score*100))}%"></div>
+    </div>`).join('');
+
+  // The paths that share the strongest pattern, across every college.
+  const mine = top.paths || top.specialties || [];
+  const byId = Object.fromEntries(specialties().map(s => [s.id, s]));
+  const cards = mine.filter(id => byId[id]).map(id => {
+    const s = byId[id];
+    return `<div class="card" onclick="pickTrack('${id}');go('cases')">
+      <div class="body"><div style="font-weight:700">${esc(s.name.ar)}</div>
+        <div class="small">${esc(collegeName(trackOf(id)))} · ${s.cases.length} حالات</div></div>
+      <div class="strip"><span>افتح المسار</span><span>‹</span></div></div>`;
+  }).join('');
+
+  return `<main>
+    <div class="meta">نتيجتك</div>
+    <h1>ميلك الأقوى: <span class="acc">${esc(top.name.ar)}</span></h1>
+    <p class="lead">${esc(top.note?.ar || '')}</p>
+    <div class="rule"></div>${bars}
+    <div class="rule" style="margin-top:18px"></div>
+    <div class="acc" style="font-weight:700">مسارات تناسب هذا النمط</div>
+    ${cards || '<p class="small">لا مسارات مرتبطة بهذا النمط بعد.</p>'}
+  </main>
+  <button class="band" onclick="go('hollandIntro')">أعد الاختبار</button>`;
+}
+
+/// The college's name in Arabic, for the line under a path's name.
+function collegeName(id){
+  const t = (DATA.tracks?.tracks || []).find(x => x.id === id);
+  return t ? t.name.ar : '';
+}
+
 /* ---------------------------------------------------------------- screens */
 function welcome(){
   setBg('screen-welcome.jpg');
@@ -138,7 +218,7 @@ function welcome(){
   </main>
   <button class="band" onclick="go('intro')">ابدأ اليوم الأول <small>لا يجمع التطبيق أي بيانات</small></button>
   <div style="text-align:center;padding:10px 0 16px">
-    <a href="#" onclick="state.track='emergency-medicine';window.jumpStop(0);go('tour');return false" style="color:var(--blue-deep);font-size:12px">جولة داخل قسم الطوارئ ‹</a>
+    <a href="#" onclick="go('hollandIntro');return false" style="color:var(--blue-deep);font-size:12px">اختبار الميول المهنية (هولند) ‹</a>
   </div>`;
 }
 
@@ -441,6 +521,7 @@ function profile(){
 }
 
 /* ---------------------------------------------------------------- actions */
+function answerHolland(id, v){ state.holland[id] = v; render(); }
 function go(stage){ state.stage = stage; render(); setWash(); window.scrollTo(0,0); }
 function pickTrack(id){ setWash();
   // Pressing a path opens it. Selecting alone left the card looking dead: the author pressed every
@@ -482,7 +563,7 @@ function record(){
 }
 function again(){ state.step=0; state.chosen={}; state.revealed=new Set(); state.q=0; state.answers={}; go('scenario'); }
 
-const SCREENS = {welcome, intro, test, fit, tracks, cases, scenario, assessment, dashboard, profile, tour, tools, conditions};
+const SCREENS = { hollandIntro, hollandTest, hollandResult,welcome, intro, test, fit, tracks, cases, scenario, assessment, dashboard, profile, tour, tools, conditions};
 function render(){ document.getElementById('screen').innerHTML = SCREENS[state.stage](); }
 // A module's functions are not global, and the markup uses inline handlers: expose the actions.
 function jumpStop(i){ state.stop = i; render(); window.scrollTo(0,0); }

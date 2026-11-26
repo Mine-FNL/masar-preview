@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>خريطة مسار — المسارات والتخصصات</title>
+<style>
+  :root { --blue-deep:#0A1F33; }
+  * { box-sizing:border-box }
+  body { margin:0; background:#F7F3EC; color:var(--blue-deep);
+         font-family:-apple-system,"SF Arabic","Segoe UI",Tahoma,sans-serif; }
+  header { padding:26px 20px 10px; max-width:1240px; margin:0 auto }
+  h1 { margin:0 0 6px; font-size:26px }
+  .sub { color:#5A6B7B; font-size:14px }
+  .cols { max-width:1240px; margin:0 auto; padding:8px 20px 40px;
+           display:grid; gap:18px; grid-template-columns:repeat(3,1fr) }
+  @media (max-width:900px) { .cols { grid-template-columns:1fr } }
+  section { background:var(--wash); border-radius:18px; padding:16px 16px 6px; }
+  h2 { margin:0 0 12px; font-size:20px; color:var(--ink); display:flex; align-items:center; gap:8px }
+  .n { font-size:12px; background:rgba(255,255,255,.75); color:var(--ink);
+        border-radius:999px; padding:2px 9px; font-weight:600 }
+  .fams { display:flex; flex-direction:column; gap:10px }
+  .fam { background:rgba(255,255,255,.72); border-radius:12px; padding:10px 12px }
+  .famname { font-weight:700; font-size:14px; color:var(--ink); margin-bottom:6px }
+  ul { margin:0; padding-inline-start:16px }
+  li { font-size:13.5px; line-height:1.85 }
+  footer { max-width:1240px; margin:0 auto; padding:0 20px 40px; color:#5A6B7B; font-size:12.5px }
+</style></head><body>
+<header>
+  <h1>خريطة مسار</h1>
+  <div class="sub">المسارات والتخصصات الموجودة في التطبيق الآن — بألوانها: الطب أزرق، التقني برتقالي، الهندسة أخضر.</div>
+</header>
+<div class="cols">
+  <section style="--wash:#CFE6F8;--ink:#0E2A47">
+    <h2>الطب <span class="n">21</span></h2>
+    <div class="fams">
+      <div class="fam">
+        <div class="famname">مسارات الطب</div>
+        <ul><li>طوارئ</li><li>طب الأطفال</li><li>طب أسرة</li><li>أسنان</li><li>جلدية</li><li>جراحة عامة</li><li>عظام</li><li>ظهر وأعصاب محيطية</li><li>علاج طبيعي</li><li>أعصاب</li><li>عيون</li><li>صحة نفسية</li><li>قلب</li><li>الغدد الصماء والسكري</li><li>باطنية</li></ul>
+      </div>
+      <div class="fam">
+        <div class="famname">مسارات متقدمة</div>
+        <ul><li>جراحة الروبوتات</li><li>أشعة وتصوير طبي</li><li>ذكاء صناعي في الطب</li><li>مختبرات طبية</li><li>صيدلة</li><li>تمريض</li></ul>
+      </div>
+    </div>
+  </section>
+  <section style="--wash:#F6DFC6;--ink:#5A3208">
+    <h2>التقني <span class="n">23</span></h2>
+    <div class="fams">
+      <div class="fam">
+        <div class="famname">الحاسوب والشبكات</div>
+        <ul><li>شبكات الحاسوب</li><li>الأمن السيبراني</li><li>تطوير البرمجيات</li><li>تحليل البيانات</li><li>الدعم الفني</li></ul>
+      </div>
+      <div class="fam">
+        <div class="famname">الإلكترونيات والكهرباء</div>
+        <ul><li>الإلكترونيات</li><li>القوى الكهربائية</li><li>التحكم الآلي</li><li>الروبوتات الصناعية</li></ul>
+      </div>
+      <div class="fam">
+        <div class="famname">الميكانيكا والصناعة</div>
+        <ul><li>الميكانيكا</li><li>اللحام والتصنيع</li><li>تشغيل المصانع</li></ul>
+      </div>
+      <div class="fam">
+        <div class="famname">البناء والمساحة</div>
+        <ul><li>المساحة</li><li>التنفيذ المدني</li><li>تشغيل وصيانة المباني</li></ul>
+      </div>
+      <div class="fam">
+        <div class="famname">الطاقة والبيئة</div>
+        <ul><li>الطاقة الشمسية</li><li>تحلية ومعالجة المياه</li><li>السلامة والصحة المهنية</li></ul>
+      </div>
+      <div class="fam">
+        <div class="famname">التقني الصحي</div>
+        <ul><li>تقنية الأشعة</li><li>تقنية المختبرات</li><li>الأجهزة الطبية</li><li>تقنية الأسنان</li><li>تقنية البصريات</li></ul>
+      </div>
+    </div>
+  </section>
+  <section style="--wash:#D7E8DC;--ink:#123A26">
+    <h2>الهندسة <span class="n">24</span></h2>
+    <div class="fams">
+      <div class="fam">
+        <div class="famname">الهندسة الميكانيكية</div>
+        <ul><li>الهندسة الميكانيكية</li><li>هندسة السيارات</li><li>هندسة الطيران</li><li>الهندسة البحرية</li></ul>
+      </div>
+      <div class="fam">
+        <div class="famname">الكهربائية والحاسوب</div>
+        <ul><li>الهندسة الكهربائية</li><li>الإلكترونيات والاتصالات</li><li>هندسة الحاسوب</li><li>هندسة التحكم والأنظمة</li></ul>
+      </div>
+      <div class="fam">
+        <div class="famname">المدنية والبنية</div>
+        <ul><li>الهندسة المدنية</li><li>هندسة الإنشاءات وإدارة المشاريع</li><li>هندسة النقل والطرق</li><li>هندسة الموارد المائية</li></ul>
+      </div>
+      <div class="fam">
+        <div class="famname">الكيميائية والمواد</div>
+        <ul><li>الهندسة الكيميائية</li><li>هندسة البترول</li><li>هندسة المواد والتعدين</li><li>الهندسة البيئية</li></ul>
+      </div>
+      <div class="fam">
+        <div class="famname">الحيوية والطبية</div>
+        <ul><li>الهندسة الطبية الحيوية</li><li>الهندسة الحيوية</li><li>الهندسة الزراعية</li><li>هندسة الأغذية</li></ul>
+      </div>
+      <div class="fam">
+        <div class="famname">الصناعية والمساندة</div>
+        <ul><li>الهندسة الصناعية والنظم</li><li>هندسة السلامة</li><li>هندسة الطاقة المتجددة</li><li>الهندسة الجيوماتية والمساحة</li></ul>
+      </div>
+    </div>
+  </section>
+</div>
+<footer>الخريطة تُرسم من ملف الرفّ نفسه (tracks.json) ومن ملفات الحالات — لا اسم فيها غير موجود في التطبيق.</footer>
+</body></html>
