@@ -417,7 +417,13 @@ function pickTrack(id){
   go('cases');
 }
 function pickCase(id){ state.track = CASES.find(c=>c.id===id).specialty.id; state.caseId = id; render(); }
-function startCase(){ if(!state.caseId) state.caseId = CASES[0].id; state.step = 0; state.chosen = {}; state.revealed = new Set(); state.q = 0; state.answers = {}; go('scenario'); }
+function startCase(){
+  // The day belongs to the path on screen. Falling back to CASES[0] started a stranger's morning:
+  // the author entered the dental path and the allergy case opened.
+  if(!state.caseId || !CASES.some(c => c.id === state.caseId && (!state.track || c.specialty.id === state.track))){
+    const here = CASES.filter(c => !state.track || c.specialty.id === state.track);
+    state.caseId = (here[0] || CASES[0]).id;
+  } state.step = 0; state.chosen = {}; state.revealed = new Set(); state.q = 0; state.answers = {}; go('scenario'); }
 function answerTest(id,v){ state.testAnswers[id] = v; render(); }
 function choose(stepId, choiceId){ state.chosen[stepId] = choiceId; state.revealed.add(stepId); render(); }
 function nextStep(){
