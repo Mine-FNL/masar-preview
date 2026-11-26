@@ -57,7 +57,7 @@ img.plate{width:100%;height:170px;object-fit:cover;display:block;margin:10px 0}
   <div class="screen" id="screen"></div>
 </div>
 <script type="module">
-const DATA = await (await fetch('data.json?v=d51f773862')).json();
+const DATA = await (await fetch('data.json?v=d318a8c7db')).json();
 const CASES = DATA.cases;
 const TEST = DATA.interest;
 const TEST_ADVANCED = DATA.interestAdvanced || DATA.interest;
@@ -172,20 +172,36 @@ function fit(){
 function tracks(){
   setBg('screen-fit.jpg');
   const list = specialties();
-  const firstAdvanced = list.findIndex(s => ADVANCED_ORDER.includes(s.id));
-  const cards = list.map((s, i) => `
-    ${i === firstAdvanced ? `<div class="rule" style="margin-top:18px"></div>
-      <div class="acc" style="font-weight:700">مسارات متقدمة</div>
-      <div class="small" style="margin-bottom:10px">تخصصات تعمل بالتقنية والتحليل: الروبوتات، والتصوير، والمختبر، والذكاء الصناعي.</div>` : ''}` + `
-    <div class="card ${state.track===s.id?'sel':''}" onclick="pickTrack('${s.id}')">
+  const byId = Object.fromEntries(list.map(s => [s.id, s]));
+  const drawn = new Set();
+  const card = (s) => `<div class="card ${state.track===s.id?'sel':''}" onclick="pickTrack('${s.id}')">
       ${s.cases[0].background ? `<img src="img/${s.cases[0].background.file}" alt="">` : ''}
       <div class="body">
         <div style="font-weight:700">${esc(s.name.ar)}</div>
         <div class="small">${s.cases.length} حالات متاحة</div>
       </div>
       <div class="strip"><span>اختر هذا المسار</span><span>‹</span></div>
-    </div>`).join('');
-  return `<main><h1>اختر مسارك</h1>${cards}</main>
+    </div>`;
+
+  // The shelf's order is content, like everything else: tracks, the families inside a track, and the
+  // specialties inside a family. A family with nothing in it yet takes no heading.
+  let html = '';
+  for (const track of (DATA.tracks?.tracks || [])) {
+    const any = track.families.some(f => f.specialties.some(id => byId[id]));
+    if (!any) continue;
+    for (const fam of track.families) {
+      const here = fam.specialties.filter(id => byId[id]);
+      if (!here.length) continue;
+      html += `<div class="rule" style="margin-top:18px"></div>
+        <div class="acc" style="font-weight:700">${esc(fam.name.ar)}</div>
+        ${fam.note ? `<div class="small" style="margin-bottom:10px">${esc(fam.note.ar)}</div>` : ''}`;
+      for (const id of here) { html += card(byId[id]); drawn.add(id); }
+    }
+  }
+  // Anything the file does not mention still shows rather than vanishing.
+  const rest = list.filter(s => !drawn.has(s.id));
+  if (rest.length) html += `<div class="acc" style="margin-top:18px">مسارات أخرى</div>` + rest.map(card).join('');
+  return `<main><h1>اختر مسارك</h1>${html}</main>
   <button class="band" onclick="go('cases')">اختر التخصص</button>`;
 }
 
