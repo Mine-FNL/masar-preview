@@ -6,7 +6,7 @@
 <title>آفاق المستقبل — معاينة</title>
 <style>
 :root{
-  --blue-deep:#0A1F33; --blue:#0E2A47; --paper:#F4EBDB; --wash:rgba(207,230,248,.86);
+  --blue-deep:#0A1F33; --blue:#0E2A47; --paper:#F4EBDB; --wash:rgba(207,230,248,.86); --wash-orange:rgba(246,223,198,.86); --wash-green:rgba(215,232,216,.86);
   --red:#A02B22; --redlite:#E8837A; --chip:rgba(220,234,255,.94); --rule:rgba(10,31,51,.22);
 }
 *{box-sizing:border-box}
@@ -67,6 +67,20 @@ const state = { stage:'welcome', track:null, caseId:null, step:0, chosen:{}, rev
                 q:0, answers:{}, testAnswers:{}, results:{}, stop:0 };
 
 const bgFor = f => f ? `url('img/${f}')` : 'none';
+// Which college a path belongs to, read from the shelf file like everything else.
+function trackOf(sid){
+  for (const t of (DATA.tracks?.tracks || []))
+    for (const f of t.families)
+      if (f.specialties.includes(sid)) return t.id;
+  return null;
+}
+function setWash(){
+  const id = trackOf(state.track);
+  const wash = id === 'technology' ? 'var(--wash-orange)'
+             : id === 'engineering' ? 'var(--wash-green)'
+             : 'var(--wash)';
+  document.documentElement.style.setProperty('--wash', wash);
+}
 const setBg = f => { document.getElementById('bg').style.backgroundImage = bgFor(f); };
 const L = o => (o && typeof o === 'object' ? (o.ar || o.en || '') : (o || ''));
 const esc = s => String(s||'').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
@@ -427,8 +441,8 @@ function profile(){
 }
 
 /* ---------------------------------------------------------------- actions */
-function go(stage){ state.stage = stage; render(); window.scrollTo(0,0); }
-function pickTrack(id){
+function go(stage){ state.stage = stage; render(); setWash(); window.scrollTo(0,0); }
+function pickTrack(id){ setWash();
   // Pressing a path opens it. Selecting alone left the card looking dead: the author pressed every
   // specialty on the shelf and nothing came.
   state.track = id;
