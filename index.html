@@ -57,9 +57,10 @@ img.plate{width:100%;height:170px;object-fit:cover;display:block;margin:10px 0}
   <div class="screen" id="screen"></div>
 </div>
 <script type="module">
-const DATA = await (await fetch('data.json?v=9d436ab9ae')).json();
+const DATA = await (await fetch('data.json?v=d51f773862')).json();
 const CASES = DATA.cases;
 const TEST = DATA.interest;
+const TEST_ADVANCED = DATA.interestAdvanced || DATA.interest;
 const scale = TEST.scale.labels;
 const maxScale = Math.max(...scale.map(s => s.value));
 const state = { stage:'welcome', track:null, caseId:null, step:0, chosen:{}, revealed:new Set(),
@@ -141,15 +142,17 @@ function intro(){
 function test(){
   setBg('screen-test.jpg');
   const answered = Object.keys(state.testAnswers).length;
-  const rows = TEST.items.map((it, idx) => {
+  const list = state.testDepth === 'advanced' ? TEST_ADVANCED : TEST;
+  const rows = list.items.map((it, idx) => {
     const chips = scale.map(s => `<button class="${state.testAnswers[it.id]===s.value?'on':''}"
         onclick="answerTest('${it.id}',${s.value})">${esc(s.text.ar)}</button>`).join('');
     return `<div class="rule"></div>
       <div style="margin:10px 0 2px">${esc((idx+1)+'. '+it.text.ar)}</div>
       <div class="optscale">${chips}</div>`;
   }).join('');
-  return `<main>${rows}<div class="footer">${answered} / ${TEST.items.length}</div></main>
-  <button class="band" ${answered < TEST.items.length ? 'disabled' : ''}
+  const pick = `<div class="optscale" style="margin:4px 0 14px"><button class="${state.testDepth==='advanced'?'':'on'}" onclick="setDepth('starter')">٢١ بنداً · سريع</button><button class="${state.testDepth==='advanced'?'on':''}" onclick="setDepth('advanced')">القائمة الكاملة · ٦٣</button></div>`;
+  return `<main>${pick}${rows}<div class="footer">${answered} / ${list.items.length}</div></main>
+  <button class="band" ${answered < list.items.length ? 'disabled' : ''}
     onclick="go('fit')">أظهر النتيجة <small>${answered < TEST.items.length ? 'أكمل الأسئلة أولاً' : 'جاهز'}</small></button>`;
 }
 
@@ -424,6 +427,7 @@ function startCase(){
     const here = CASES.filter(c => !state.track || c.specialty.id === state.track);
     state.caseId = (here[0] || CASES[0]).id;
   } state.step = 0; state.chosen = {}; state.revealed = new Set(); state.q = 0; state.answers = {}; go('scenario'); }
+function setDepth(d){ state.testDepth = d; render(); window.scrollTo(0,0); }
 function answerTest(id,v){ state.testAnswers[id] = v; render(); }
 function choose(stepId, choiceId){ state.chosen[stepId] = choiceId; state.revealed.add(stepId); render(); }
 function nextStep(){
